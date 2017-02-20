@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Chapter5
 {
@@ -7,17 +8,21 @@ namespace Chapter5
 
         static void Main(string[] args)
         {
+            EncabezadoYPieConsola Escritor = new EncabezadoYPieConsola();
 
-
-            //Intercambiar dos enteros usando la función genérica Swap
+            #region Ejemplo 5.1
+            //Ejemplo de Swap usando una generic function llamada Swap
             //ver la dfinición más abajo
+            Escritor.EscribirEncabezado("Ejamplo 5.1: Swap usando generics");
             int x = 2;
             int y = 3;
             System.Console.WriteLine("Inicialmente x es: {0}, e y es {1}", x.ToString(), y.ToString());
             //Esta función se puede llamar como se llama debajo o así: Swap<int>(ref x, ref y);
             Swap(ref x, ref y);
             System.Console.WriteLine("Ahora x es: {0}, e y es {1}", x.ToString(), y.ToString());
-            //*****Fin del ejemplo de Swap**********
+            Escritor.EscribirPie("Fin de Ejemplo 5.1");
+            #endregion
+
 
             //Ejemplo de uso de la función genérica 
             var accounts = new List<Account>()
@@ -50,5 +55,35 @@ namespace Chapter5
         {
 
         }
+
+        struct EncabezadoYPieConsola
+        {
+            public void EscribirEncabezado(string Titulo)
+            {
+                string encabezado = PrepararString(Titulo, '*');
+                Console.WriteLine(encabezado);
+                Console.WriteLine("");
+            }
+
+            public void EscribirPie(string Titulo)
+            {
+                string pie = PrepararString(Titulo, '-');
+                Console.WriteLine("");
+                Console.WriteLine(pie);
+                Console.WriteLine("");
+                Console.WriteLine("");
+            }
+
+            private string PrepararString(string Literal, char Caracter)
+            {
+                if (Literal.Length > 80)
+                    Literal = Literal.Substring(1, 80);
+                int numeroDeAsteriscos = 80 - Literal.Length;
+                string preparada = new string(Caracter, (int)(numeroDeAsteriscos / 2)) + Literal +
+                new string(Caracter, (int)(numeroDeAsteriscos / 2));
+                return preparada;
+            }
+        }
+
     }
 }
