@@ -52,6 +52,7 @@ namespace Chapter6
 
             //Ejemplo 3: Arrays multidimensionales rectangulares (todas las filas tienen la misma cantidad de columnas)
             #region Ejemplo 3
+
             int[,] twoDim = new int[,] {
                 { 0, 1 },
                 { 2, 3 }
@@ -66,9 +67,15 @@ namespace Chapter6
                 }
 
             }
+
+            //Tambien se podría escribir
+            //int[,,] threeDim;
+            //int[,,,] fourDim;
+            //Pero en estos casos es mejor usar CreateInstance
+
             #endregion
 
-            //Ejemplo 4: Jagged Arrays (arrays donde no todas las filas tienen la misma cantidad de columnas)
+            //Ejemplo 4: Jagged Arrays (arrays donde cada fila puede tener un número de columnas diferente)
             #region Ejemplo 4
             int[][] jagged = new int[3][];
             jagged[0] = new int[2] { 0, 1 };
@@ -158,14 +165,14 @@ namespace Chapter6
 
 
             //Ejemplo 8: Arrays multidimensionales con CreateInstance
-            //Primero creo un array que especifica el número de elementos en cada coordenada. Lo llamo coordenadas
-            //Ver que es un array de objetos, creado con CreateInstance. Eso hace que cuando lo use en CreateInstance del 
-            //array que quiero crear, lo tenga que castear a int[]. Es un poco excesivo de mi parte. Este array que 
+            //Primero creo un array unidimensional que especifica el número de elementos en cada coordenada. Lo llamo coordenadas
+            //Es un objeto Array, creado con CreateInstance y esto es diferente a un int[]. Cuando lo pase como argumento 
+            //en la segunda llamada a CreateInstance, lo tenga que castear a int[]. Es un poco excesivo de mi parte. Este array que 
             //representa las coordenadas se puede crear de tipo int directamente
             #region Ejemplo 8
-            Array coordenadas = Array.CreateInstance(typeof(int), 2);
-            coordenadas.SetValue(1, 0); //Tiene una fila
-            coordenadas.SetValue(2, 1); //Tiene dos columnas
+            Array coordenadas = Array.CreateInstance(typeof(int), 2); //Creación del array de coordenadas
+            coordenadas.SetValue(1, 0); //Valor del primer elemento: el array que voy a crear tendrá 1 fila
+            coordenadas.SetValue(2, 1); //Valor del segundo elemento: el array que voy a crear tendrá 2 columnas
             Array otroArrayMas = Array.CreateInstance(myObject.GetType(), (int[])coordenadas); //usé myObject creado en el ejemplo 7
             //A partir de acá puedo fijar y obtener valores como antes
             otroArrayMas.SetValue(11, new int[] { 0, 0 }); //Fijo el valor del primer elemento
@@ -173,6 +180,59 @@ namespace Chapter6
             otroArrayMas.SetValue(12, new int[] { 0, 1 });
             Console.WriteLine("Valores de otroArrayMas: {0}", otroArrayMas.GetValue(new int[] { 0, 0 }));
             Console.WriteLine("Valores de otroArrayMas: {0}", otroArrayMas.GetValue(new int[] { 0, 1 }));
+            #endregion
+
+
+            //Ejemplo 8b: Arrays Multidimensionales usando CreateInstance
+            //Un ejemplo con un poco más de detalle
+            #region Ejemplo 8.b)
+            //Array de Coordenadas (2 x 3)
+            Array miArrayDeInts = Array.CreateInstance(typeof(int), new int[3] { 2, 2, 2 });
+            Random miRandom = new Random(DateTime.Now.Millisecond);
+            int randomInt;
+            for (int x = 0; x < 2; x++)
+            {
+                for (int y = 0; y < 2; y++)
+                {
+                    for (int z = 0; z < 2; z++)
+                    {
+                        randomInt = miRandom.Next(9);
+                        miArrayDeInts.SetValue(randomInt, x, y, z);
+                    }
+                }
+
+            }
+
+            for (int x = 0; x < 2; x++)
+            {
+                for (int y = 0; y < 2; y++)
+                {
+                    for (int z = 0; z < 2; z++)
+                    {
+                        Console.WriteLine("Valor en: {0},{1},{2}: {3}", x.ToString(), y.ToString(), z.ToString(),
+                            miArrayDeInts.GetValue(x, y, z).ToString());
+                    }
+                }
+
+            }
+            #endregion
+
+            //Ejemplo 8.c) Crear un array que no es zero-based
+            #region Ejemplo 8.c)
+            //Primero creamos un array para fijar las coordenadas
+            //Este array va a tener 5 dimensiones
+            int[] coordenadasArray = new int[5] { 1, 2, 3, 4, 5 };
+            //Ahora creamos un array para el límite inferior de cada coordenada
+            //Las coordenadas impares tienen un límite inferior de uno (1), las pares de cero (0)
+            int[] limitesInferiores = new int[5] { 1, 0, 1, 0, 1 };
+            //Ahora creo un array
+            Array arrayEspecial = Array.CreateInstance(typeof(int), coordenadasArray, limitesInferiores);
+            //Por ultimo puedo fijar los valores
+            arrayEspecial.SetValue(5, new int[] { 1, 0, 1, 0, 1 });
+            arrayEspecial.SetValue(6, new int[] { 1, 1, 1, 0, 1 });
+            Console.WriteLine("El valor 10101 es: {0}", arrayEspecial.GetValue(new int[] { 1, 0, 1, 0, 1 }));
+            Console.WriteLine("El valor 11101 es: {0}", arrayEspecial.GetValue(new int[] { 1, 1, 1, 0, 1 }));
+
             #endregion
 
 
@@ -204,6 +264,7 @@ namespace Chapter6
             SortablePerson[] PersonArrayTest = new SortablePerson[3];
             objectArray = PersonArrayTest;
             objectArray[0] = new SortablePerson();
+            //La siguiente línea daría un error
             //objectArray[1] = "Una string de prueba";
             #endregion
 
@@ -273,6 +334,8 @@ namespace Chapter6
             Console.WriteLine(unObjeto.Equals(otroObjeto));
 
             #endregion
+
+
 
         }
     }

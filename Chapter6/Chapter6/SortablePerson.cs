@@ -20,6 +20,12 @@ namespace Chapter6
             set { _lastName = value; }
         }
 
+        /// <summary>
+        /// Permite ordenar (sort) los elementos de tipo SortablePerson 
+        /// dentro de un array
+        /// </summary>
+        /// <param name="otherPerson"></param>
+        /// <returns></returns>
         public int CompareTo(SortablePerson otherPerson)
         {
             if (otherPerson == null)
