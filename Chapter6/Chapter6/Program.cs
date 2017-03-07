@@ -304,9 +304,11 @@ namespace Chapter6
             //Ejemplo 11: Segmentos de Arrays. En este caso creo un segmento pasando dos segmentos
             //uno de cada array de enteros creado al principio
             //Es decir, el segmento está creado por la unión de dos segmentos
-            //Esto me muestra lso dos constructores que tengo: 
-            //new ArraySegment<int>[2]
-            //new ArraySegment<int>[]{new Arraysegment<int>(enterosPares, 1, 2)}
+            //Esto me muestra el constructor que supongo es más habitual usar: 
+            //new ArraySegment<int>(arrayOriginal, offset, count)
+            //En este ejemplo, se crea un array de segmentos de array
+            //new ArraySegment<int>[]{new Arraysegment<int>(enterosPares, 1, 2), 
+            //new Arraysegment<int>(enterosImpares, 1, 2)}
             #region Ejemplo 11
             separador.EscribirEncabezado("Ejemplo 11: Segmentos de Arrays");
 
@@ -316,10 +318,31 @@ namespace Chapter6
                 {new ArraySegment<int> (enterosImpares, 1, 2),
                  new ArraySegment<int>(enterosPares, 1, 2)};
 
+            Console.WriteLine("La manera siguiente de enumerar los elementos del segmento de array no funciona");
             for (int i = 0; i < segmentoDeEnteros.Length; i++)
             {
                 Console.WriteLine("Valor de Elemento {0}: {1}", i.ToString(), segmentoDeEnteros[i].ToString());
             }
+            Console.WriteLine("Esta es la correcta:");
+
+            int segmentOffset;
+            int segmentCount;
+
+            segmentOffset = segmentoDeEnteros[0].Offset;
+            segmentCount = segmentoDeEnteros[0].Count;
+            for (int i = segmentOffset; i < segmentOffset + segmentCount; i++)
+            {
+                Console.WriteLine("Este es el valor del elemento {0} del primer segmento: {1}", i.ToString(), segmentoDeEnteros[0].Array[i].ToString());
+            }
+
+
+            segmentOffset = segmentoDeEnteros[1].Offset;
+            segmentCount = segmentoDeEnteros[1].Count;
+            for (int i = segmentOffset; i < segmentOffset + segmentCount; i++)
+            {
+                Console.WriteLine("Este es el valor del elemento {0} del segundo segmento: {1}", i.ToString(), segmentoDeEnteros[1].Array[i].ToString());
+            }
+
 
             separador.EscribirPie("Fin Ejemplo 11");
             #endregion
@@ -380,6 +403,69 @@ namespace Chapter6
             Console.WriteLine(unObjeto.Equals(otroObjeto));
 
             separador.EscribirPie("Fin Ejemplo 12");
+            #endregion
+
+
+            //Ejemplo 13: Enumeración y Enumeración inversa
+            //La manera sencilla de enumerar Arrays es con foreach
+            //foreach no permite enumerar en forma inversa, para eso tengo que crear mi propia clase
+            #region Ejemplo 13
+            separador.EscribirEncabezado("Ejemplo 13; Enumeraciones");
+
+            //Primero definimos un array con números random del 0 al 100
+            int[] arrayAleatorio = new int[25];
+            Random asignador = new Random(DateTime.Now.Millisecond);
+
+            for (int i = 0; i < arrayAleatorio.Length; i++)
+            {
+                arrayAleatorio[i] = asignador.Next(100);
+            }
+
+
+            //Ahora enumeramos
+            //Primero en forma directa
+            Console.WriteLine("Enumeración directa");
+            foreach (var enteroAleatorio in arrayAleatorio)
+            {
+                Console.WriteLine(enteroAleatorio.ToString());
+            }
+
+
+
+            separador.EscribirPie("Fin Ejemplo 13");
+            #endregion
+
+
+            //Ejemplo 14: Enumeradores personalizados
+            //Se muestra el uso de Yield y la definición de enumeradores personalizados
+            #region Ejemplo 14
+            separador.EscribirEncabezado("Ejemplo 14: Enumeradores personalizados");
+
+            SerieDeEnteros miSerie = new SerieDeEnteros(50, 10);
+            Console.WriteLine("Enumeración Directa:");
+            string linea = "";
+            foreach (var miEntero in miSerie)
+            {
+                linea += miEntero.ToString() + ", ";
+            }
+            Console.WriteLine(linea);
+            Console.WriteLine("Enumeración inversa:");
+            linea = "";
+            foreach (var miEntero in miSerie.EnumeracionReversa())
+            {
+                linea += miEntero.ToString() + ", ";
+            }
+            Console.WriteLine(linea);
+
+            Console.WriteLine("Enumerar Pares");
+            linea = "";
+            foreach (var miEnteroPar in miSerie.EnumerarPares())
+            {
+                linea += miEnteroPar.ToString() + ", ";
+            }
+            Console.WriteLine(linea);
+
+            separador.EscribirPie("Fin de Ejemplo 14");
             #endregion
 
 
