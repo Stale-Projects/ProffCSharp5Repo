@@ -350,7 +350,7 @@ namespace Chapter6
             //Ejemplo 12: Comparaciones
             //Para comparar dos arrays lo mejor es usar IStructuralEquatable 
             //que me permite comparar dos arrays en secuencia. Es decir, la secuencia de elementos en el array tiene
-            //que ser la misma. Pero no compara elementos en desorden
+            //que ser la misma. Si están desordenados, aunque los valores sean iguales, la comparación indica que son distintos
             //Con las tuplas puedo usar Equals también, lo cual con arrays no funciona porque compara por referencia
             //De todos modos, usar siempre IStructuralEquatable
             #region Ejemplo 12
@@ -359,6 +359,7 @@ namespace Chapter6
             int[] enterosComparacion = { 1, 3, 5, 7, 9 };
             int[] enterosComparacionInvertida = { 9, 7, 5, 3, 1 };
 
+            Console.WriteLine("Comparación usando: StructuralComparisons.StructuralEqualityComparer.Equals(arg1, arg2)");
             Console.WriteLine("Comparación entre enterosImpares y enterosComparacion: {0}",
                 StructuralComparisons.StructuralEqualityComparer.Equals(enterosImpares, enterosComparacion));
 
@@ -369,8 +370,9 @@ namespace Chapter6
                 StructuralComparisons.StructuralEqualityComparer.Equals(enterosPares, enterosComparacionInvertida));
 
             //Otro modo de comparar los arays de enteros
+            Console.WriteLine("Otro modo de comparar: enterosImpares as IStructuralEquatable).Equals(enterosComparacion, EqualityComparer<int>.Default");
             if ((enterosImpares as IStructuralEquatable).Equals(enterosComparacion, EqualityComparer<int>.Default))
-                Console.WriteLine("Ahora sí son iguales enterosImpares y EnterosComparacion");
+                Console.WriteLine("Siguen siendo iguales: enterosImpares y EnterosComparacion");
             else
                 Console.WriteLine("enterosImpares y EneterosComparacion no son iguales!?");
 
@@ -468,6 +470,62 @@ namespace Chapter6
             separador.EscribirPie("Fin de Ejemplo 14");
             #endregion
 
+
+            //Ejemplo 15: Comparo dos arrays de UDTs usando la clase PersonasComparables
+            //que está mal nombrada, debería haber sido en singlular
+            #region Ejemplo 15
+            separador.EscribirEncabezado("Ejemplo 15: Comparación estructural de Arrays de UDTs");
+
+            Console.WriteLine("Comparamos dos arrays de UDTs estructuralmente");
+            var jlb = new PersonasComparables { Apellido = "Borges", Nombre = "Jorge Luis" };
+
+            PersonasComparables[] unasPersonas =
+            {
+                new PersonasComparables {Apellido = "Asimov", Nombre = "Isaac" },
+                jlb
+            };
+
+            PersonasComparables[] otrasPersonas =
+            {
+                jlb,
+                new PersonasComparables { Nombre = "Isaac", Apellido="Asimov"}
+            };
+
+            Console.WriteLine("Primero comparo con un simple '=='. Esto compara referencias, debe dar distinto");
+            if (unasPersonas == otrasPersonas)
+            {
+                Console.WriteLine("Las referencias son iguales! (WTF)");
+            }
+            else
+            {
+                Console.WriteLine("Las referencias son distintas, como cabía esperar");
+            }
+
+            Console.WriteLine("Ahora usamos una comparación con el código de Stack Overflow");
+            Console.WriteLine("Recorda que va using System.Cllections");
+
+            bool sonIguales = StructuralComparisons.StructuralEqualityComparer.Equals(unasPersonas, otrasPersonas);
+
+            Console.WriteLine("Son iguales? Respuesta: {0}", sonIguales.ToString());
+            //Recordemos que hay que ordenarlos para compararlos
+            Array.Sort<PersonasComparables>(unasPersonas);
+            Array.Sort<PersonasComparables>(otrasPersonas);
+            sonIguales = StructuralComparisons.StructuralEqualityComparer.Equals(unasPersonas, otrasPersonas);
+            Console.WriteLine("Comparación luego de ordenar. Son iguales? Respuesta: {0}", sonIguales.ToString());
+
+            //Ahora usamos la comparación del libro
+            sonIguales = false;
+            sonIguales = (unasPersonas as IStructuralEquatable).Equals(otrasPersonas as IStructuralEquatable,
+                EqualityComparer<PersonasComparables>.Default);
+            Console.WriteLine("Comparación según el libro. Son iguales? Respuesta: {0}", sonIguales.ToString());
+
+
+            Console.WriteLine("Este es el primero: {0}", unasPersonas[0].ToString());
+            Console.WriteLine("Este es el segundo: {0}", unasPersonas[1].ToString());
+
+
+            separador.EscribirPie("Fin Ejemplo 15");
+            #endregion
 
 
         }
