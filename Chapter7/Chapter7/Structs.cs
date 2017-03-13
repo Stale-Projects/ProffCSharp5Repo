@@ -21,6 +21,7 @@ namespace Chapter7
             this.z = z;
         }
 
+        //Sobrecarga de operador asignación (Vector2 = Vector1)?
         public Vector(Vector rhs)
         {
             this.x = rhs.x;
@@ -28,7 +29,7 @@ namespace Chapter7
             this.z = rhs.z;
         }
 
-        //Ejemplo de Operator overloading
+        //Ejemplo de Operator overloading: Suma
         public static Vector operator +(Vector lhs, Vector rhs)
         {
             Vector result = new Vector(lhs);
@@ -38,6 +39,8 @@ namespace Chapter7
             return result;
         }
 
+        //Sobrecarga de Operador producto con tres versiones: 
+        //Escalar por Vector, Vector por escalar, Vector por Vector
         public static Vector operator *(long lhs, Vector rhs)
         {
             return new Vector(rhs.x * lhs, rhs.y * lhs, rhs.z * lhs);
@@ -53,12 +56,15 @@ namespace Chapter7
             return (lhs.x * rhs.x) + (lhs.y * rhs.y) + (lhs.z * rhs.z);
         }
 
+        //Sobrecarga de Operador comparación (==)
         public static bool operator ==(Vector lhs, Vector rhs)
         {
             return ((lhs.x == rhs.x) &&
                 (lhs.y == rhs.y) && (lhs.z == rhs.z));
         }
 
+        //Sobrecarga de operador comparación (!=) usando como base
+        //el operador de comparación (==)
         public static bool operator !=(Vector lhs, Vector rhs)
         {
             return !(lhs == rhs);
@@ -70,7 +76,7 @@ namespace Chapter7
             string result;
             result = "(" + this.x.ToString() + ", " + this.y.ToString() + ", " + this.z.ToString() + ")";
             return result;
-            
+
         }
     }
 

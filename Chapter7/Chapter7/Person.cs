@@ -1,9 +1,23 @@
-﻿namespace Chapter7
+﻿using System;
+namespace Chapter7
 {
     class Person
     {
         private string _firstName;
+        private HashType _tipoDeHash;
+        public enum HashType
+        {
+            Algoritmo = 1,
+            Fijo = 2,
+            Aleatorio = 3
 
+        }
+
+
+        public Person(HashType tipoDeHash)
+        {
+            _tipoDeHash = tipoDeHash;
+        }
         public string FirstName
         {
             get { return _firstName; }
@@ -38,11 +52,29 @@
         }
         //Cuando se hace un override de Equals conviene hacer un override de GetHashCode para asegurarnos que 
         //dos objetos que son iguales según Equals tengan el mismo hash
+        //Usamos dos enteros primos y computamos el hashcode como la suma de los hashcodes multiplicados por cada uno de estos enteros
         public override int GetHashCode()
         {
             int i = 13;
             int j = 7;
-            return (this.FirstName.GetHashCode() * i) + (this.LastName.GetHashCode() * j);
+            Random hasheador = new Random(DateTime.Now.Millisecond);
+
+            switch (_tipoDeHash)
+            {
+                case HashType.Algoritmo:
+                    return (this.FirstName.GetHashCode() * i) + (this.LastName.GetHashCode() * j);
+                    break;
+                case HashType.Fijo:
+                    return 20;
+                    break;
+                case HashType.Aleatorio:
+                    return hasheador.Next(100000);
+                    break;
+                default:
+                    return 0;
+                    break;
+            }
+
 
         }
 
