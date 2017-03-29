@@ -21,7 +21,8 @@ namespace Chapter7
             this.z = z;
         }
 
-        //Sobrecarga de operador asignación (Vector2 = Vector1)?
+        //Este constructor se usa para hacer más elegante la definición del operador suma
+        //Si la definiera usando el código comentado, este constructor no sería necesario
         public Vector(Vector rhs)
         {
             this.x = rhs.x;
@@ -33,9 +34,18 @@ namespace Chapter7
         public static Vector operator +(Vector lhs, Vector rhs)
         {
             Vector result = new Vector(lhs);
+
             result.x += rhs.x;
             result.y += rhs.y;
             result.z += rhs.z;
+
+
+            //Vector result = new Vector();
+
+            //result.x = lhs.x + rhs.x;
+            //result.y = lhs.y + rhs.y;
+            //result.z = lhs.z + rhs.z;
+
             return result;
         }
 

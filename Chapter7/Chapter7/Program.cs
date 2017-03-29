@@ -240,28 +240,38 @@ namespace Chapter7
             //Ejemplo 10: Conversión con System.Convert
             //Usando System.Convert no se pierden centavos, mientras que usando una conversión explícita de float a unint sí se pierde
             #region Ejemplo 10
+            Separador.EscribirEncabezado("Ejemplo 10: Conversiones usando System.Convert");
+
+
             float amount = 0.63f;
             uint cents = System.Convert.ToUInt16(amount * 100.0f);
             float dollars = cents / 100.0f;
-            Console.WriteLine("Valor float inicial: {0}", amount.ToString());
-            Console.WriteLine("Cents: {0}", cents.ToString());
-            Console.WriteLine("Dollars: {0}", dollars.ToString());
+            Console.WriteLine("Valor float inicial es de tipo float: {0}", amount.ToString());
+            Console.WriteLine("Cents (uint convertido con System.Convert): {0}", cents.ToString());
+            Console.WriteLine("Dollars (uint a float implícito) : {0}", dollars.ToString());
 
             cents = (uint)(amount * 100.0f);
             dollars = cents / 100.0f;
-            Console.WriteLine("Cents: {0}", cents.ToString());
-            Console.WriteLine("Dollars: {0}", dollars.ToString());
+            Console.WriteLine("Cents (conversión explicita a uint desde float): {0}", cents.ToString());
+            Console.WriteLine("Dollars (conversión implícita desde uint a float usando el segundo valor de cents: {0}", dollars.ToString());
+
+            Separador.EscribirPie("Fin Ejemplo 10");
             #endregion
 
 
-            //Ejemplo 11: En este caso, es una definción de Caste ntre dos clases creadas por mí. 
+            //Ejemplo 11: En este caso, es una definción de Cast entre dos clases creadas por mí. 
             //Ver en Chapter7.Classes las definicones de OneMan y AnotherMan. 
             //La conversión puede definrise en cualquiera de las dos clases (origen y target) con exactamente el mismo código,
             //y funcionará de las dos maneras
             #region Ejemplo 11
+            Separador.EscribirEncabezado("Ejemplo 11: Conversiones personalizadas");
+
             OneMan unHombre = new OneMan("Juan Carlos", "Pelotudo");
+            Console.WriteLine("El nombre de OneMan es: {0}, {1}", unHombre.LastName, unHombre.FirstName);
             AnotherMan otroHombre = (AnotherMan)unHombre;
-            Console.WriteLine("El nombre completo es: {0}", otroHombre.FullName);
+            Console.WriteLine("El nombre completo de AnotherMan es: {0}", otroHombre.FullName);
+
+            Separador.EscribirPie("Fin Ejemplo 11");
             #endregion
 
 
@@ -272,6 +282,7 @@ namespace Chapter7
             //Por eso siempre obtengo 4 divisores sin importar los pasajes que haga entre tipo derivado y tipo base
             //El único modo de obtener dos divisores es que el tipo base sea puro
             #region Ejemplo 12
+            Separador.EscribirEncabezado("Ejemplo 12: Conversión entre clases");
             //Primer escenario: Casteo un EnteroPar para convertirlo en un Entero. Recibo el cast en una variable Entero
             EnteroPar dos = new EnteroPar(3); //Aunque sea un contrasentido acá, sirve para los ejemplos de casteo con EnteroPrimo abajo para ver si tuvo éxito o no
             Entero uno = (Entero)dos;
@@ -323,6 +334,7 @@ namespace Chapter7
                 Console.WriteLine("divisoresDe6[{0}]={1}", i.ToString(), divisoresDe6[i].ToString());
             }
 
+            Separador.EscribirPie("Fin ejemplo 12");
             #endregion
 
 

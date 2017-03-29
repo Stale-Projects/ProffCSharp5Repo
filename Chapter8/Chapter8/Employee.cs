@@ -41,5 +41,15 @@
             }
         }
 
+        //Puedo también sobrecargar los operadores: < y > de manera muy simple
+        public static bool operator <(Employee lhs, Employee rhs)
+        {
+            return (lhs.Salary < rhs.Salary);
+        }
+
+        public static bool operator >(Employee lhs, Employee rhs)
+        {
+            return (lhs.Salary > rhs.Salary);
+        }
     }
 }

@@ -4,26 +4,36 @@ using System.Collections.Generic;
 namespace Chapter8
 {
     //Usada para el lame example
+    //Los delegados se declaran como una clase, y en los mismos lugares que una clase:
+    //A nivel de namespace como aqui, dentro de otra clase
     delegate string AStringFuntion();
-    //Usada para el ejemplo de Array de Delegados
-    delegate long Operacion(int x);
+
     class Program
     {
+        //Usada para el ejemplo de Array de Delegados
+        public delegate long Operacion(int x);
 
         static void Main(string[] args)
         {
+            EncabezadoYPieConsola Separador = new EncabezadoYPieConsola();
             //Ejemplo 1: Creo una función, le apunto con un delegado
             //y luego llamo al delegado que es lo mismo que llamar a la función
             //Aquí uso Delegate Inference, la  línea 18 pudo haber sido: AStringFunction firstStringFunction = new AStringFunction(ThisFunction);
             #region Ejemplo 1
+
+            Separador.EscribirEncabezado("Ejemplo 1: Ejemplo simple de Delegado");
+
             AStringFuntion firstStringFunction = ThisFunction;
             string mensaje = firstStringFunction();
             Console.WriteLine(mensaje);
+
+            Separador.EscribirEncabezado("Fin Ejemplo 1");
             #endregion
 
             //Ejemplo 2: Usar un array de delegates
-            //Ver que el delegado se declara sin tener en cuenta el array
             #region Ejemplo 2
+            Separador.EscribirEncabezado("Ejemplo 2: Array de Delegados");
+
             Operacion[] Operaciones =
             {
                 new Operacion(MathOperations.MultiplicarPorDos),
@@ -34,12 +44,16 @@ namespace Chapter8
             {
                 CalcularYMostrar(Operaciones[i]);
             }
+
+            Separador.EscribirPie("Fin Ejemplo 2");
             #endregion
 
 
-            //Ejemplo 3: Lo mismo que en ejemplo 2, pero usando un Delegate
+            //Ejemplo 3: Lo mismo que en ejemplo 2, pero usando un Generic Delegate
             //Vemos que no hace falta declarar el delegado específico, porque uso la declaración Genérica que ya está provista por C#
             #region Ejemplo 3
+            Separador.EscribirEncabezado("Ejemplo 3: Generic Delegate");
+
             Func<int, long>[] OperacionesConGeneric =
             {
                 MathOperations.MultiplicarPorDos, MathOperations.Cuadrado
@@ -48,16 +62,22 @@ namespace Chapter8
             {
                 CalcularConGenericYMostrar(OperacionesConGeneric[i]);
             }
+
+            Separador.EscribirPie("Fin Ejemplo 3");
             #endregion
 
 
             //Ejemplo 4: Aquí veo el poder real de los Generics y de los Delegate.
             #region Ejemplo 4
+            Separador.EscribirEncabezado("Ejemplo 4: Bubblesorter");
             //En el primer caso ordeno un array de enteros usando un BubbleSorter que está definido 
             //sólo para el caso en que tenga que ordenar enteros, es una implementación específica
             //Ordenar un array de enteros
             int[] array = PrepareArray();
+            Console.WriteLine("Array antes de ordenar");
+            PrintArray(array);
             BubbleSorter.BubbleSort(array);
+            Console.WriteLine("Array después de ordenar");
             PrintArray(array);
 
             //Ahora, voy a ordenar una lista de objetos definidos por mí
@@ -65,7 +85,10 @@ namespace Chapter8
 
             //Ordenar una List de Employees
             List<Employee> empleados = PrepareEmployees();
+            Console.WriteLine("Lista de Empleados antes de ordenar");
+            PrintEmployees(empleados);
             BubbleSorter.GenericBubbleSort(empleados, Employee.CompareTo);
+            Console.WriteLine("Lista de Empleados después de ordenar");
             PrintEmployees(empleados);
 
 
@@ -73,8 +96,13 @@ namespace Chapter8
             //Como el BubbleSorter tiene un parámetro de tipo 
             //IList<T> en List<T> puedo usar también un array
             Employee[] arrayDeEmpleados = PrepareEmployeeArray();
-            BubbleSorter.GenericBubbleSort(arrayDeEmpleados, Employee.CompareTo);
+            Console.WriteLine("Array de Empleados antes de ordenar");
             PrintEmployees(arrayDeEmpleados);
+            BubbleSorter.GenericBubbleSort(arrayDeEmpleados, Employee.CompareTo);
+            Console.WriteLine("Array de Empleados después de ordenar");
+            PrintEmployees(arrayDeEmpleados);
+
+            Separador.EscribirPie("Fin de Ejemplo 4");
             #endregion
 
 
@@ -82,6 +110,8 @@ namespace Chapter8
             //Como se ve, no hay necesidad de declarar el Multicast Delegate ya que uso el Generic Delegate Action<T>
             //Y con una sola llamada se invocan todas las funciones de la lista
             #region Eejemplo 5
+            Separador.EscribirEncabezado("Ejemplo 5: Multicast Delegate");
+
             Action<int> OperacionesNulas = MathOperations.CuadradoYMostrar;
             OperacionesNulas += MathOperations.Dividir5PorX;
             OperacionesNulas += MathOperations.MutiplicarPorDosyMostrar;
@@ -106,6 +136,8 @@ namespace Chapter8
                 accion(1000);
 
             }
+
+            Separador.EscribirPie("Fin Ejemplo 5");
             #endregion
 
 
@@ -233,6 +265,35 @@ namespace Chapter8
         public static void ReportarExcepcion(Exception e)
         {
             Console.WriteLine("Ocurrió una excepción: {0}", e.Message);
+        }
+
+        struct EncabezadoYPieConsola
+        {
+            public void EscribirEncabezado(string Titulo)
+            {
+                string encabezado = PrepararString(Titulo, '*');
+                Console.WriteLine(encabezado);
+                Console.WriteLine("");
+            }
+
+            public void EscribirPie(string Titulo)
+            {
+                string pie = PrepararString(Titulo, '-');
+                Console.WriteLine("");
+                Console.WriteLine(pie);
+                Console.WriteLine("");
+                Console.WriteLine("");
+            }
+
+            private string PrepararString(string Literal, char Caracter)
+            {
+                if (Literal.Length > 80)
+                    Literal = Literal.Substring(1, 80);
+                int numeroDeAsteriscos = 80 - Literal.Length;
+                string preparada = new string(Caracter, (int)(numeroDeAsteriscos / 2)) + Literal +
+                new string(Caracter, (int)(numeroDeAsteriscos / 2));
+                return preparada;
+            }
         }
 
     }

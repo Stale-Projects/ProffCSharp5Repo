@@ -37,6 +37,7 @@
         //Aunque es más intuitivo (al menos para mí) poner la conversión en el tipo origen, funciona exactamente igual si la 
         //pongo en el tipo destino, y además el código es exactamente igual
         //Pero ojo, esto convierte de Man a AnotherMan y no viceversa
+        //Escrito aquí entonces, el código de conversión es exactamente igual
         //public static implicit operator AnotherMan(OneMan person)
         //{
         //    return new AnotherMan(person.FirstName + " " + person.LastName);
