@@ -8,18 +8,28 @@ namespace Chapter10
     {
         static void Main(string[] args)
         {
+            //Para escribir las separaciones
+            EncabezadoYPieConsola separador = new EncabezadoYPieConsola();
+
             #region Ejemplo 1: Instanciación de List con constructor y agregado manual de elementos
             //Primer modo de declarar
             //Ejemplo de Capacity y Count
+            separador.EscribirEncabezado("Ejemplo 1: Instanciar List con constructor y agregar elementos manualmente");
             List<Guitarist> guitarristasDePunk = new List<Guitarist>();
             Console.WriteLine("guitarristasDePunk: Capacity: {0}, Count: {1}", guitarristasDePunk.Capacity.ToString(), guitarristasDePunk.Count.ToString());
             Guitarist david = new Guitarist("David", "Jones", "Gibson Les Paul", 40);
             guitarristasDePunk.Add(david);
-            Console.WriteLine("guitarristasDePunk: Capacity: {0}, Count: {1}", guitarristasDePunk.Capacity.ToString(), guitarristasDePunk.Count.ToString());
+            Console.WriteLine("Antes de TrimExcess - guitarristasDePunk: Capacity: {0}, Count: {1}", guitarristasDePunk.Capacity.ToString(), guitarristasDePunk.Count.ToString());
+            guitarristasDePunk.TrimExcess();
+            Console.WriteLine("Después de TrimExcess - guitarristasDePunk: Capacity: {0}, Count: {1}", guitarristasDePunk.Capacity.ToString(), guitarristasDePunk.Count.ToString());
+
+            separador.EscribirPie("Fin Ejemplo 1");
             #endregion
 
 
             #region  Ejemplo 2: Instanciación en base a algunos objetos conocidos
+            separador.EscribirEncabezado("Ejemplo 2: Instanciación en base a algunos objetos conocidos");
+
             //Otro modo de declarar en base a algunos objetos conocidos
             Guitarist ritchie = new Guitarist("Ritchie", "Blackmore", "Fender Stratocaster", 100);
             Guitarist jimmy = new Guitarist("Jimmy", "Page", "Gibson Les Paul", 99);
@@ -31,10 +41,14 @@ namespace Chapter10
             Guitarist jimi = new Guitarist("James Marshall", "Hendrix", "Fender Stratocaster", 100);
             guitarristasDeRock.Add(jimi);
             Console.WriteLine("guitarristasDeRock: Capacity: {0}, Count: {1}", guitarristasDeRock.Capacity.ToString(), guitarristasDeRock.Count.ToString());
+
+            separador.EscribirPie("Fin ejemplo 2");
             #endregion
 
 
             #region Ejemplo 3: Instanciación en base a objetos declarados dentro del llamado al contructor
+            separador.EscribirEncabezado("Ejemplo 3: Instanciación en base a objetos anónimos");
+
             //Otro modo más, declarando los objetos sobre el pucho
             List<Guitarist> guitarristasDeFolklore = new List<Guitarist>
             {
@@ -43,14 +57,22 @@ namespace Chapter10
             };
             Console.WriteLine("guitarristasDeFolklore: Capacity: {0}, Count: {1}", guitarristasDeFolklore.Capacity.ToString(), guitarristasDeFolklore.Count.ToString());
 
-            foreach (Guitarist guitarrista in guitarristasDeRock)
+            foreach (Guitarist guitarrista in guitarristasDeFolklore)
             {
                 Console.WriteLine(guitarrista.ToString());
             }
+
+            separador.EscribirPie("Fin Ejemplo 3");
             #endregion
 
 
-            #region Ejemplo 4: Insertar elementos en una posición definida y uso de foreach
+            #region Ejemplo 4a: Agregar elementos e Insertar elementos en una posición definida y uso de foreach
+            separador.EscribirEncabezado("Ejemplo 4a: Agregar elementos, Insertar y uso de foreach()");
+            //Primero agrego simplemente unos objetos anónimos o ya instanciados
+            guitarristasDeRock.Add(new Guitarist("Norberto", "Nappolitano", "Gibson Flying V", 110));
+            Guitarist Alex = new Guitarist("Alex", "Lifeson", "Gibson Les Paul custom", 77);
+            guitarristasDeRock.Add(Alex);
+
             //Tener en cuenta, al proporcionar el index que son zero-based
             //En el código que sigue inserto para que el nuevo sea el primer elemento
             guitarristasDePunk.Insert(0, new Guitarist("Kevin John", "Wasserman", "Ibanez", 35));
@@ -60,6 +82,15 @@ namespace Chapter10
                 Console.WriteLine(guitarrista.ToString());
             }
 
+            separador.EscribirPie("Fin Ejemplo 4a");
+            #endregion
+
+
+            #region Ejemplo 4b: Agregar múltiples elementos y uso de ForEach()
+            separador.EscribirEncabezado("Ejemplo 4b: Agregar múltiples elementos y uso de ForEach()");
+
+
+            separador.EscribirPie("Fin Ejemplo 4b");
             #endregion
 
 
@@ -221,4 +252,33 @@ namespace Chapter10
                 Console.WriteLine(item.ToString());
         }
     }
+    struct EncabezadoYPieConsola
+    {
+        public void EscribirEncabezado(string Titulo)
+        {
+            string encabezado = PrepararString(Titulo, '*');
+            Console.WriteLine(encabezado);
+            Console.WriteLine("");
+        }
+
+        public void EscribirPie(string Titulo)
+        {
+            string pie = PrepararString(Titulo, '-');
+            Console.WriteLine("");
+            Console.WriteLine(pie);
+            Console.WriteLine("");
+            Console.WriteLine("");
+        }
+
+        private string PrepararString(string Literal, char Caracter)
+        {
+            if (Literal.Length > 80)
+                Literal = Literal.Substring(1, 80);
+            int numeroDeAsteriscos = 80 - Literal.Length;
+            string preparada = new string(Caracter, (int)(numeroDeAsteriscos / 2)) + Literal +
+            new string(Caracter, (int)(numeroDeAsteriscos / 2));
+            return preparada;
+        }
+    }
+
 }
