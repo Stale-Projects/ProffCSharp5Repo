@@ -66,12 +66,18 @@ namespace Chapter10
             #endregion
 
 
-            #region Ejemplo 4a: Agregar elementos e Insertar elementos en una posición definida y uso de foreach
-            separador.EscribirEncabezado("Ejemplo 4a: Agregar elementos, Insertar y uso de foreach()");
+            #region Ejemplo 4a: Agregar e insertar elementos 
+            separador.EscribirEncabezado("Ejemplo 4a: Agregar e insertar elementos");
             //Primero agrego simplemente unos objetos anónimos o ya instanciados
             guitarristasDeRock.Add(new Guitarist("Norberto", "Nappolitano", "Gibson Flying V", 110));
-            Guitarist Alex = new Guitarist("Alex", "Lifeson", "Gibson Les Paul custom", 77);
-            guitarristasDeRock.Add(Alex);
+            Guitarist alex = new Guitarist("Alex", "Lifeson", "Gibson Les Paul custom", 77);
+            guitarristasDeRock.Add(alex);
+
+            //Agregar múltiples elementos con AddRange()
+            guitarristasDeRock.AddRange(new Guitarist[] {
+            new Guitarist("Jack", "White", "Gretsch 6130", 25),
+            new Guitarist("Jack", "Black", "Gibson SG", 25) });
+
 
             //Tener en cuenta, al proporcionar el index que son zero-based
             //En el código que sigue inserto para que el nuevo sea el primer elemento
@@ -86,16 +92,67 @@ namespace Chapter10
             #endregion
 
 
-            #region Ejemplo 4b: Agregar múltiples elementos y uso de ForEach()
-            separador.EscribirEncabezado("Ejemplo 4b: Agregar múltiples elementos y uso de ForEach()");
+            #region Ejemplo 4b: Acceder a elementos 
+            separador.EscribirEncabezado("Ejemplo 4c: Acceder a elementos");
+
+            //Acceder de a un elemento por vez usando el índice
+            Console.WriteLine("Enumeración en un loop for");
+            for (int i = 0; i < guitarristasDeRock.Count; i++)
+            {
+                Console.WriteLine("Nombre completo: {0} - Guitarra Preferida: {1}",
+                    guitarristasDeRock[i].FirstName + " " + guitarristasDeRock[i].LastName,
+                    guitarristasDeRock[i].Guitar);
+            }
+
+            //Acceder a los elementos en forma secuencial con foreach()
+            Console.WriteLine("Enumeración con foreach: un poco más conciso");
+            foreach (var unG in guitarristasDeRock)
+            {
+                Console.WriteLine("Nombre completo: {0} - Guitarra Preferida: {1}",
+                    unG.FirstName + " " + unG.LastName, unG.Guitar);
+
+            }
+
+            //Uso de ForEach
+            Console.WriteLine("Mucho más económico: ForEach");
+            guitarristasDeRock.ForEach(Guitarist.ImprimirDatos);
+
+            //Un poco más elegante
+            Console.WriteLine("Económico y elegante? Acá va:");
+            guitarristasDeRock.ForEach(g => Console.WriteLine("{0:G}", g));
 
 
-            separador.EscribirPie("Fin Ejemplo 4b");
+            separador.EscribirPie("Fin ejemplo 4c");
+            #endregion
+
+            #region Ejemplo #5.a Buscar elementos en listas simples
+            separador.EscribirEncabezado("Ejemplo #5.a: Búsquedas en listas simples");
+
+            List<int> enterosPrimos = new List<int>(new int[] {
+                2,3,5,7,11,13,17,19,23,29,23,19,17,13,11,7,5,3,2,19 });
+
+            int indiceDe19 = enterosPrimos.IndexOf(19);
+            Console.WriteLine("Encontré a 19 en la posición {0}", indiceDe19);
+            indiceDe19 = enterosPrimos.IndexOf(19, 8);
+            Console.WriteLine("La segunda instancia de 19 está en la posición {0}", indiceDe19);
+            indiceDe19 = enterosPrimos.LastIndexOf(19);
+            Console.WriteLine("La última instancia de 19 está en la posición {0}", indiceDe19);
+            indiceDe19 = enterosPrimos.LastIndexOf(19, 12);
+            Console.WriteLine("La última instancia de 19 en el subgrupo de los 13 primeros elementos está en la posición {0}", indiceDe19);
+
+            indiceDe19 = enterosPrimos.FindIndex()
+
+            int diecinueve = enterosPrimos.Find(x => x - 19 == 0);
+            Console.WriteLine("Esto encontré con Find: {0}", diecinueve);
+
+
+            separador.EscribirPie("Fin de ejemplo 5.a");
             #endregion
 
 
-            #region Ejemplo 5: Acceder a un elemento en particular y borrar un elemento
-            //Se accede como si fuera un array
+            #region Ejemplo #5: Borrar Elementos
+            separador.EscribirEncabezado("Ejemplo 5: Borrar Elementos");
+
             Console.WriteLine("Acceder al primer elemento antes de borrar");
             Console.WriteLine(guitarristasDePunk[0].ToString());
             //Borro
@@ -109,6 +166,8 @@ namespace Chapter10
             Console.WriteLine("Ahora guitarristasDePunk tiene {0} elementos después de borrar a Jones a partir de un objeto creado igual al que quiero borrar", guitarristasDePunk.Count.ToString());
             guitarristasDePunk.Remove(david);
             Console.WriteLine("Ahora guitarristasDePunk tiene {0} elementos después de borrar a Jones con la referencia", guitarristasDePunk.Count.ToString());
+
+            separador.EscribirPie("Fin Ejemplo 5");
             #endregion
 
 
@@ -251,6 +310,16 @@ namespace Chapter10
             foreach (var item in lista)
                 Console.WriteLine(item.ToString());
         }
+
+        //Este método lo uso para ForEach en la lista
+        private static void ImprimirDatos(Guitarist g)
+        {
+            string mensaje;
+            mensaje = "Nombre: " + g.FirstName + g.LastName +
+                " - Guitarra preferida: " + g.Guitar;
+            Console.WriteLine(mensaje);
+        }
+
     }
     struct EncabezadoYPieConsola
     {

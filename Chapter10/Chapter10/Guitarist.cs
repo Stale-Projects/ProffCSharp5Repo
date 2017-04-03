@@ -56,6 +56,14 @@ namespace Chapter10
 
             }
         }
+
+        public static void ImprimirDatos(Guitarist g)
+        {
+            string mensaje;
+            mensaje = "Nombre: " + g.FirstName + g.LastName +
+                " - Guitarra preferida: " + g.Guitar;
+            Console.WriteLine(mensaje);
+        }
     }
 
     class SelectScore

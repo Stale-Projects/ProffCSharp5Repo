@@ -89,6 +89,7 @@
   <ItemGroup>
     <Compile Include="Guitarist.cs" />
     <Compile Include="GuitaristComparer.cs" />
+    <Compile Include="Guitarrista.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
