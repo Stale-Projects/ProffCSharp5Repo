@@ -133,14 +133,17 @@ namespace Chapter10
 
             int indiceDe19 = enterosPrimos.IndexOf(19);
             Console.WriteLine("Encontré a 19 en la posición {0}", indiceDe19);
-            indiceDe19 = enterosPrimos.IndexOf(19, 8);
+            indiceDe19 = enterosPrimos.IndexOf(19, indiceDe19 + 1);
             Console.WriteLine("La segunda instancia de 19 está en la posición {0}", indiceDe19);
             indiceDe19 = enterosPrimos.LastIndexOf(19);
             Console.WriteLine("La última instancia de 19 está en la posición {0}", indiceDe19);
             indiceDe19 = enterosPrimos.LastIndexOf(19, 12);
             Console.WriteLine("La última instancia de 19 en el subgrupo de los 13 primeros elementos está en la posición {0}", indiceDe19);
 
-            indiceDe19 = enterosPrimos.FindIndex()
+            Guitarrista ricardoSoule = new Guitarrista("Ricardo", "Soule", "Gibson SG", 20);
+            object obj = ricardoSoule;
+            Console.WriteLine("Comparacion ricardoSoule.Equals(obj): {0}", ricardoSoule.Equals(obj));
+
 
             int diecinueve = enterosPrimos.Find(x => x - 19 == 0);
             Console.WriteLine("Esto encontré con Find: {0}", diecinueve);

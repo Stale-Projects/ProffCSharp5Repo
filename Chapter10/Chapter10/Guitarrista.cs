@@ -17,6 +17,7 @@ namespace Chapter10
             Apreciacion = apreciacion;
         }
 
+        #region Implementaión de IComparable<Guitarrista>
         public int CompareTo(Guitarrista otro)
         {
             if (otro == null)
@@ -34,6 +35,32 @@ namespace Chapter10
             }
         }
 
+        #endregion
+
+        public bool Equals(Guitarrista otro)
+        {
+            if (otro == null) return false;
+            return ((this.Apellido == otro.Apellido) &&
+                (this.Nombre == otro.Nombre));
+
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !(obj is Guitarrista)) return false;
+            Guitarrista otro = (obj as Guitarrista);
+            return ((otro.Nombre == Nombre) && (otro.Apellido == Apellido));
+        }
+
+        public override int GetHashCode()
+        {
+            int i = 13;
+            int j = 7;
+            Random aleatorio = new Random(DateTime.Now.Millisecond);
+            return (this.Nombre.GetHashCode() * i) + (this.Apellido.GetHashCode() * j);
+        }
+
+        #region Override de ToString() con formatos
         //Hacemos override del método ToString para generar un output personalizado
         public override string ToString()
         {
@@ -55,6 +82,8 @@ namespace Chapter10
             }
         }
 
+        #endregion
+
         public static void ImprimirDatos(Guitarrista g)
         {
             string mensaje;
@@ -63,11 +92,13 @@ namespace Chapter10
             Console.WriteLine(mensaje);
         }
 
+        #region Predicado para búsquedas
         //Proveer comparación para búsquedas
         public static bool PredicadoComparacion(Guitarrista g)
         {
             return true;
         }
+        #endregion
     }
 
 }
