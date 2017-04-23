@@ -11,6 +11,28 @@ namespace Chapter10
             //Para escribir las separaciones
             EncabezadoYPieConsola separador = new EncabezadoYPieConsola();
 
+            #region Ejemplo 0: Incrementos de Capacity
+            //En este ejemplo se ven las diferencias de comportamiento entre dos colecciones declaradas de distinto modo en cuanto a su capacity
+            //El compilador trata de buscar un equilibrio entre la mínima cantidad de re-definiciones de capacity con el mínimo exceso de capacity
+            separador.EscribirEncabezado("Ejemplo 0: Cambios de Capacity");
+
+            List<int> mvEnteros = new List<int>(10);
+            for (int i = 0; i < 21; i++)
+            {
+                mvEnteros.Add(i);
+                Console.WriteLine("Agregado el elemeto: {0}. Ahora la capacity es: {1}", (i + 1).ToString(), mvEnteros.Capacity.ToString());
+            }
+
+            List<int> mvEnterosIneficientes = new List<int>();
+            for (int i = 0; i < 21; i++)
+            {
+                mvEnterosIneficientes.Add(i);
+                Console.WriteLine("Agregado el elemeto: {0}. Ahora la capacity es: {1}", (i + 1).ToString(), mvEnterosIneficientes.Capacity.ToString());
+            }
+
+            separador.EscribirPie("Fin de Ejemplo 0");
+            #endregion
+
             #region Ejemplo 1: Instanciación de List con constructor y agregado manual de elementos
             //Primer modo de declarar
             //Ejemplo de Capacity y Count
@@ -25,7 +47,6 @@ namespace Chapter10
 
             separador.EscribirPie("Fin Ejemplo 1");
             #endregion
-
 
             #region  Ejemplo 2: Instanciación en base a algunos objetos conocidos
             separador.EscribirEncabezado("Ejemplo 2: Instanciación en base a algunos objetos conocidos");
@@ -45,7 +66,6 @@ namespace Chapter10
             separador.EscribirPie("Fin ejemplo 2");
             #endregion
 
-
             #region Ejemplo 3: Instanciación en base a objetos declarados dentro del llamado al contructor
             separador.EscribirEncabezado("Ejemplo 3: Instanciación en base a objetos anónimos");
 
@@ -64,7 +84,6 @@ namespace Chapter10
 
             separador.EscribirPie("Fin Ejemplo 3");
             #endregion
-
 
             #region Ejemplo 4a: Agregar e insertar elementos 
             separador.EscribirEncabezado("Ejemplo 4a: Agregar e insertar elementos");
@@ -90,7 +109,6 @@ namespace Chapter10
 
             separador.EscribirPie("Fin Ejemplo 4a");
             #endregion
-
 
             #region Ejemplo 4b: Acceder a elementos 
             separador.EscribirEncabezado("Ejemplo 4c: Acceder a elementos");
@@ -152,9 +170,8 @@ namespace Chapter10
             separador.EscribirPie("Fin de ejemplo 5.a");
             #endregion
 
-
-            #region Ejemplo #5: Borrar Elementos
-            separador.EscribirEncabezado("Ejemplo 5: Borrar Elementos");
+            #region Ejemplo #5: Borrar Elementos de a uno
+            separador.EscribirEncabezado("Ejemplo 5: Borrar Elementos de a uno");
 
             Console.WriteLine("Acceder al primer elemento antes de borrar");
             Console.WriteLine(guitarristasDePunk[0].ToString());
@@ -164,15 +181,16 @@ namespace Chapter10
             Console.WriteLine(guitarristasDePunk[0].ToString());
 
             //Borrar por nombre del elemento
-            Guitarist borrarGuitarrista = new Guitarist("David", "Jones", "Gibson Les Paul", 40);
-            guitarristasDePunk.Remove(borrarGuitarrista);
+            //Guitarist borrarGuitarrista = new Guitarist("David", "Jones", "Gibson Les Paul", 40);
+            var borrarGuitarrista = guitarristasDePunk.FindLast(g => g.FirstName == "David" && g.LastName == "Jones");
+            if (borrarGuitarrista != null) guitarristasDePunk.Remove(borrarGuitarrista);
+
             Console.WriteLine("Ahora guitarristasDePunk tiene {0} elementos después de borrar a Jones a partir de un objeto creado igual al que quiero borrar", guitarristasDePunk.Count.ToString());
             guitarristasDePunk.Remove(david);
             Console.WriteLine("Ahora guitarristasDePunk tiene {0} elementos después de borrar a Jones con la referencia", guitarristasDePunk.Count.ToString());
 
             separador.EscribirPie("Fin Ejemplo 5");
             #endregion
-
 
             #region Ejemplo 6: Busco un elemento
             //Primero busco usando un Predicate
@@ -210,7 +228,7 @@ namespace Chapter10
             #endregion
 
             #region Ejemplo 8: Busco todos los elementos con una determinada condicion
-
+            separador.EscribirEncabezado("Ejemplo 8: Busqueda de elementos");
             //Primero usando un predicate
             List<Guitarist> guitarristasConScoreNoNulo = guitarristasDeRock.FindAll(new SelectScore(0).SelectScorePredicate);
             foreach (Guitarist guitarristaEvaluado in guitarristasConScoreNoNulo)
@@ -220,32 +238,36 @@ namespace Chapter10
 
             //Ahora con una Lambda
             guitarristasConScoreNoNulo = guitarristasDeRock.FindAll(g => g.Score > 0);
+            var otrosGuitarristas = guitarristasDeRock.Except(guitarristasConScoreNoNulo);
 
+
+            separador.EscribirPie("Fin Ejemplo 8");
             #endregion
 
             #region Ejemplo 9: Borro de una lista todos los elementos que están en otra lista
+            separador.EscribirEncabezado("Ejemplo 9: Borrar de una lista los guitarristas que están en otra");
+
             //Comienzo creando un HashSet de elementos
-            var GuitarristasQueNoEstan = new HashSet<Guitarist>()
+
+            var GuitarristasQueNoEstan = new List<Guitarist>()
             {
-                jimi
+                new Guitarist("James Marshall", "Hendrix", "Fender Stratocaster", 100)
 
             };
 
             //Ahora borro
             guitarristasDeRock.RemoveAll(g => GuitarristasQueNoEstan.Contains(g));
+            Console.WriteLine("Veamos que Jimi no está");
             foreach (Guitarist gui in guitarristasDeRock)
             {
                 Console.WriteLine(gui.ToString());
             }
 
-            //Importante: Esto solo funciona si la lista a GuitarristasQueNoEstan se creó a partir de un subconjunto formado por LOS MISMOS OBJETOS
-            //que los que están en la lista GuitarristasDeRock. Es decir, si hubiera creado un nuevo objeto Guitarist usando los mismos valores de FirstName, LastName, etc.
-            //no se hubiera borrado nada. Ver que la creé usando un objeto pre-existente
-            //Para borrar por valor, tendría que definir lo qe es igualdad en el objeto Guitarist (sobrecarga del operador ==)
+            //Importante: Si no implementé Equals en la clase Guitarist, esto solo funciona si la lista a GuitarristasQueNoEstan se creó a partir de un subconjunto formado por 
+            //LOS MISMOS OBJETOS
+            //que los que están en la lista GuitarristasDeRock. 
 
             #endregion
-
-
 
             #region Ejemplo 10: Crear una nueva lista a partir de otra pre-existente con una condición
             //Para que esto funcione hay que agregar la referencia a System.Linq
@@ -255,7 +277,6 @@ namespace Chapter10
                 Console.WriteLine(guit.ToString());
             Console.WriteLine("==================================");
             #endregion
-
 
             #region Ejemplo11: Primera sobrecarga de Sort
             Guitarist Ace = new Guitarist("Ace", "Frehley", "Gibson Les Paul", 80);
@@ -285,7 +306,6 @@ namespace Chapter10
 
             #endregion
 
-
             #region Ejemplo 13: Cuarta Sobrecarga de Sort
             Console.WriteLine("==========Ejemplo 13: Sort cuarta sobrecarga");
             Console.WriteLine("Antes de ordenar");
@@ -299,12 +319,6 @@ namespace Chapter10
             ImprimirLista(guitarristasDeRock);
             Console.WriteLine("--------------Fin de Ejemplo 13-------------");
             #endregion
-
-
-
-
-
-
 
         }
 

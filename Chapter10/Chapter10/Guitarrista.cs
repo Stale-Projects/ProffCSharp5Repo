@@ -17,7 +17,7 @@ namespace Chapter10
             Apreciacion = apreciacion;
         }
 
-        #region Implementaión de IComparable<Guitarrista>
+        #region Implementación de IComparable<Guitarrista>
         public int CompareTo(Guitarrista otro)
         {
             if (otro == null)
@@ -39,7 +39,10 @@ namespace Chapter10
 
         public bool Equals(Guitarrista otro)
         {
-            if (otro == null) return false;
+            if (otro == null)
+            {
+                return false;
+            }
             return ((this.Apellido == otro.Apellido) &&
                 (this.Nombre == otro.Nombre));
 
@@ -49,14 +52,14 @@ namespace Chapter10
         {
             if ((obj == null) || !(obj is Guitarrista)) return false;
             Guitarrista otro = (obj as Guitarrista);
-            return ((otro.Nombre == Nombre) && (otro.Apellido == Apellido));
+            return Equals(otro);
+            //return ((otro.Nombre == Nombre) && (otro.Apellido == Apellido));
         }
 
         public override int GetHashCode()
         {
             int i = 13;
             int j = 7;
-            Random aleatorio = new Random(DateTime.Now.Millisecond);
             return (this.Nombre.GetHashCode() * i) + (this.Apellido.GetHashCode() * j);
         }
 

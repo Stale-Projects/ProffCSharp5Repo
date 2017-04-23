@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 namespace Chapter10
 {
     //Este objeto se crea para poder usar colecciones
-    class Guitarist : IComparable<Guitarist>, IFormattable
+    class Guitarist : IComparable<Guitarist>, IEquatable<Guitarist>, IFormattable
     {
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
@@ -19,6 +19,7 @@ namespace Chapter10
             Score = score;
         }
 
+        #region IComparable
         public int CompareTo(Guitarist otro)
         {
             if (otro == null)
@@ -36,11 +37,52 @@ namespace Chapter10
             }
         }
 
+        #endregion
+
+        #region IComparable
+        public bool Equals(Guitarist otro)
+        {
+            if (otro == null) return false;
+
+            return ((this.FirstName == otro.FirstName) && (this.LastName == otro.LastName));
+
+        }
+
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !(obj is Guitarist)) return false;
+            return this.Equals(obj as Guitarist);
+        }
+        public override int GetHashCode()
+        {
+            return (13 * this.FirstName.GetHashCode()) + (17 * this.LastName.GetHashCode());
+        }
+
+        #endregion
+
         //Overrideamos el método ToString para generar un output personalizado
         public override string ToString()
         {
             return String.Format("{0} {1} toca una {2} y su Score es: {3}", FirstName, LastName, Guitar, Score.ToString());
         }
+
+        public static bool operator ==(Guitarist lhs, Guitarist rhs)
+        {
+            if (object.ReferenceEquals(lhs, rhs)) return true;
+            if (object.ReferenceEquals(lhs, null)) return false;
+            if (object.ReferenceEquals(rhs, null)) return false;
+
+            return ((rhs.FirstName == lhs.FirstName) && (rhs.LastName == lhs.LastName));
+
+
+        }
+
+        public static bool operator !=(Guitarist lhs, Guitarist rhs)
+        {
+            return !(lhs == rhs);
+        }
+
 
         //Ahora proveemos un método para formatear sobrecargado
         public string ToString(string formato, IFormatProvider formatProvider)
@@ -77,7 +119,7 @@ namespace Chapter10
         public bool SelectScorePredicate(Guitarist guitarrista)
         {
             Contract.Requires<ArgumentNullException>(guitarrista != null);
-            return guitarrista.Score > this.Score;
+            return guitarrista.Score > Score;
         }
     }
 
