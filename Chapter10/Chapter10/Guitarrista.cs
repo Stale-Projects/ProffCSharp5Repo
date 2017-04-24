@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Chapter10
 {
@@ -37,6 +38,7 @@ namespace Chapter10
 
         #endregion
 
+        #region Implementación de IEquatable
         public bool Equals(Guitarrista otro)
         {
             if (otro == null)
@@ -62,6 +64,7 @@ namespace Chapter10
             int j = 7;
             return (this.Nombre.GetHashCode() * i) + (this.Apellido.GetHashCode() * j);
         }
+        #endregion
 
         #region Override de ToString() con formatos
         //Hacemos override del método ToString para generar un output personalizado
@@ -104,5 +107,68 @@ namespace Chapter10
         #endregion
     }
 
+    class ComparadorDeGuitarristas : IComparer<Guitarrista>
+    {
+        public enum TipoDeComparacion
+        {
+            PorNombreCompleto,
+            PorScore,
+            PorGuitarra
+        }
+
+        public TipoDeComparacion Comparacion { get; private set; }
+
+        public ComparadorDeGuitarristas(TipoDeComparacion comparacion)
+        {
+            Comparacion = comparacion;
+        }
+
+        public int Compare(Guitarrista lhs, Guitarrista rhs)
+        {
+            switch (Comparacion)
+            {
+                case TipoDeComparacion.PorNombreCompleto:
+                    return CompararPorNombreCompleto(lhs, rhs);
+                    break;
+                case TipoDeComparacion.PorScore:
+                    return CompararPorScore(lhs, rhs);
+                    break;
+                case TipoDeComparacion.PorGuitarra:
+                    return CompararPorGuitarra(lhs, rhs);
+                    break;
+                default:
+                    throw new IndexOutOfRangeException("El valor de la propiedad Comparacion provisto no está soportado");
+                    break;
+            }
+        }
+
+        private int CompararPorNombreCompleto(Guitarrista lhs, Guitarrista rhs)
+        {
+            if (lhs == null && rhs == null) return -1;
+            if (lhs == null) return -1;
+            if (rhs == null) return 1;
+            string primerNombre = lhs.Nombre + " " + lhs.Apellido;
+            string segundoNombre = rhs.Nombre + " " + rhs.Apellido;
+            return primerNombre.CompareTo(segundoNombre);
+
+        }
+
+        private int CompararPorScore(Guitarrista lhs, Guitarrista rhs)
+        {
+            if (lhs == null && rhs == null) return -1;
+            if (lhs == null) return -1;
+            if (rhs == null) return 1;
+            return lhs.Apreciacion.CompareTo(rhs.Apreciacion);
+
+        }
+
+        private int CompararPorGuitarra(Guitarrista lhs, Guitarrista rhs)
+        {
+            if (lhs == null && rhs == null) return -1;
+            if (lhs == null) return -1;
+            if (rhs == null) return 1;
+            return lhs.Guitarra.CompareTo(rhs.Guitarra);
+        }
+    }
 }
 

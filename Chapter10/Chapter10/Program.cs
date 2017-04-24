@@ -270,15 +270,21 @@ namespace Chapter10
             #endregion
 
             #region Ejemplo 10: Crear una nueva lista a partir de otra pre-existente con una condición
+            separador.EscribirEncabezado("Ejemplo 10: Crear una List a partir de otra pre-existente");
+
             //Para que esto funcione hay que agregar la referencia a System.Linq
             var GuitarristasQueTocanLesPaul = guitarristasDeRock.Where(g => g.Guitar == "Gibson Les Paul").ToList();
             Console.WriteLine("Ejemplo 10: Guitarristas que tocan Les Paul");
             foreach (Guitarist guit in GuitarristasQueTocanLesPaul)
                 Console.WriteLine(guit.ToString());
             Console.WriteLine("==================================");
+
+            separador.EscribirPie("Fin Ejemplo 10");
             #endregion
 
             #region Ejemplo11: Primera sobrecarga de Sort
+            separador.EscribirEncabezado("Ejemplo 11: Sort sin argumentos");
+
             Guitarist Ace = new Guitarist("Ace", "Frehley", "Gibson Les Paul", 80);
             Guitarist Martin = new Guitarist("Martin", "Barre", "Gibson Les Paul", 100);
             Guitarist Alex = new Guitarist("Alex", "Lifeson", "Gibson Les Paul", 100);
@@ -286,16 +292,19 @@ namespace Chapter10
             guitarristasDeRock.Add(Martin);
             guitarristasDeRock.Add(Alex);
 
-            Console.WriteLine("========Ejemplo 11: Orden usando Sort sin parámetros=========");
             Console.WriteLine("Antes de ordenar");
             ImprimirLista(guitarristasDeRock);
             guitarristasDeRock.Sort();
             Console.WriteLine("Después de ordenar");
             ImprimirLista(guitarristasDeRock);
             Console.WriteLine("--------------Fin de Ejemplo 11-------------");
+
+            separador.EscribirPie("Fin de ejemplo 11");
             #endregion
 
             #region Ejemplo 12: Segunda Sobrecarga de Sort
+            separador.EscribirEncabezado("Ejemplo 12: Segunda sobrecarga de Sort");
+
             Console.WriteLine("==========Ejemplo 12: Sort segunda sobrecarga");
             Console.WriteLine("Antes de ordenar");
             ImprimirLista(guitarristasDeRock);
@@ -304,10 +313,12 @@ namespace Chapter10
             ImprimirLista(guitarristasDeRock);
             Console.WriteLine("--------------Fin de Ejemplo 12-------------");
 
+            separador.EscribirPie("Fin Ejemplo 12");
             #endregion
 
             #region Ejemplo 13: Cuarta Sobrecarga de Sort
-            Console.WriteLine("==========Ejemplo 13: Sort cuarta sobrecarga");
+            separador.EscribirEncabezado("Ejemplo 13: Cuarta sobrecarga de Sort");
+
             Console.WriteLine("Antes de ordenar");
             //En este caso proporciono una Lambda para ordenar y luego uso el método Reverse para dar orden inverso
             //Ver que usé el método CompareTo del tipo int32 para proporcionar el valor que espera Sort: un entero que indica el 
@@ -317,7 +328,8 @@ namespace Chapter10
             guitarristasDeRock.Reverse();
             Console.WriteLine("Después de ordenar");
             ImprimirLista(guitarristasDeRock);
-            Console.WriteLine("--------------Fin de Ejemplo 13-------------");
+
+            separador.EscribirPie("Fin de ejemplo 13");
             #endregion
 
         }
