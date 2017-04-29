@@ -47,8 +47,6 @@ namespace Chapter10Queues
             #endregion
 
 
-            //Esta nota es para probar GIT
-            //Otra nota
 
         }
     }
