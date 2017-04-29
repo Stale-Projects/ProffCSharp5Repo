@@ -28,12 +28,23 @@ namespace Chapter10Queues
 
             primeraClase.Enqueue(new Pasajero("Charles Lindbergh", 3, "A"));
             primeraClase.Enqueue(new Pasajero("Antoine de Saint Exupery", 1, "B"));
+            primeraClase.Enqueue(new Pasajero("Amelia Earhart", 2, "C"));
             Pasajero elSiguiente = primeraClase.Dequeue();
             Console.WriteLine("El primero en llegar fue: {0} que se sienta en {1}-{2}", elSiguiente.Nombre, elSiguiente.Fila.ToString(), elSiguiente.Asiento);
 
             separador.EscribirPie("Fin de ejemplo 2");
             #endregion
 
+            #region Ejemplo 3: Enumerador
+            separador.EscribirEncabezado("Ejemplo 3: Enumerador");
+
+            foreach (var pasajero in primeraClase)
+            {
+                Console.WriteLine("El siguiente es: {0} que se sienta en {1}-{2}", pasajero.Nombre, pasajero.Fila.ToString(), pasajero.Asiento);
+            }
+
+            separador.EscribirPie("Fin ejemplo 3");
+            #endregion
 
         }
     }

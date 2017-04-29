@@ -126,7 +126,7 @@ namespace Chapter_10_LinkedLists
                 prio = rnd.Next(0, 10);
 
                 indice = listaDocs.FindLastIndex(d => d.Prioridad == prio);
-                if
+                //if
                 listaDocs.Insert(indice, new Documento(titulo, "Lame content", (byte)prio));
 
             }
