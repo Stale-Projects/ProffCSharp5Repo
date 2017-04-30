@@ -8,35 +8,44 @@ namespace Chapter_10_LinkedLists
     {
         static void Main(string[] args)
         {
-            #region Ejemplo 1: LinkedList, ejemplo simple usando sobrecargas de Add 
-            EscribirInicio("Ejemplo 1");
+            EncabezadoYPieConsola separador = new EncabezadoYPieConsola();
+
+            #region Ejemplo 1: LinkedList, ejemplo simple usando sobrecargas de AddFirst y AddLast 
+            separador.EscribirEncabezado("Ejemplo 1: Sobrecargas de AddFirst y AddLast");
+
             LinkedList<int> Impares = new LinkedList<int>();
-            LinkedListNode<int> Uno = new LinkedListNode<int>(1);
-            Impares.AddFirst(Uno);
+            LinkedListNode<int> nodoUno = new LinkedListNode<int>(1);
+            Impares.AddFirst(nodoUno);
             Impares.AddLast(3);
+            Impares.AddLast(new LinkedListNode<int>(5));
+
             foreach (int item in Impares)
             {
                 Console.WriteLine(item);
             }
-            EscribirCierre();
+
+            separador.EscribirPie("Fin Ejemplo 1");
             #endregion
 
 
             #region Ejemplo 2: Usar Find e Insertar
-            EscribirInicio("Ejemplo2");
+            separador.EscribirEncabezado("Ejemplo 2: Usar Find e Insertar");
+
             LinkedList<string> palabras = new LinkedList<string>();
             palabras.AddFirst("Primero");
             palabras.AddLast("Segundo");
             palabras.AddLast("Tercero");
             //Ahora busco para insertar entre segundo tercero
             LinkedListNode<string> segundo = palabras.Find("Segundo");
-            palabras.AddAfter(segundo, "Insertado");
-            palabras.AddAfter(segundo, "Insertado");
+            LinkedListNode<string> nodoInsertado = palabras.AddAfter(segundo, "Insertado");
+            palabras.AddAfter(nodoInsertado, new LinkedListNode<string>("Infiltrado"));
             foreach (string palabra in palabras)
             {
                 Console.WriteLine(palabra);
             }
-            EscribirCierre();
+
+            palabras.fin
+            separador.EscribirPie("Fin Ejemplo 2");
             #endregion
 
 
@@ -154,4 +163,34 @@ namespace Chapter_10_LinkedLists
 
 
     }
+
+    struct EncabezadoYPieConsola
+    {
+        public void EscribirEncabezado(string Titulo)
+        {
+            string encabezado = PrepararString(Titulo, '*');
+            Console.WriteLine(encabezado);
+            Console.WriteLine("");
+        }
+
+        public void EscribirPie(string Titulo)
+        {
+            string pie = PrepararString(Titulo, '-');
+            Console.WriteLine("");
+            Console.WriteLine(pie);
+            Console.WriteLine("");
+            Console.WriteLine("");
+        }
+
+        private string PrepararString(string Literal, char Caracter)
+        {
+            if (Literal.Length > 80)
+                Literal = Literal.Substring(1, 80);
+            int numeroDeAsteriscos = 80 - Literal.Length;
+            string preparada = new string(Caracter, (int)(numeroDeAsteriscos / 2)) + Literal +
+            new string(Caracter, (int)(numeroDeAsteriscos / 2));
+            return preparada;
+        }
+    }
+
 }
