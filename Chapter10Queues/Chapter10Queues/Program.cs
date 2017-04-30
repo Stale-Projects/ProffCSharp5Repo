@@ -46,8 +46,7 @@ namespace Chapter10Queues
             separador.EscribirPie("Fin ejemplo 3");
             #endregion
 
-
-
+            //Más ejemplos de colas en la sección sobre ejecución multi-hilos
         }
     }
 
