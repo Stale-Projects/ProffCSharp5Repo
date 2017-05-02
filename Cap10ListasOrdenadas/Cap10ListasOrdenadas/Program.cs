@@ -49,11 +49,43 @@ namespace Cap10ListasOrdenadas
             separador.EscribirPie("Fin Ejemplo 1");
             #endregion
 
+            #region Ejemplo 2
+            separador.EscribirEncabezado("Ejemplo 2: Buscar valores");
+
+            //Usamos el método TryGetValue para buscar un valor
+            //No hace falta un Tr...Catch, si no se encuentra, devuelve un valor vacío
+            string unISBN = "978-8-420-63311-4";
+            string unTitulo;
+
+            if (librosDeBorges.TryGetValue(unISBN, out unTitulo))
+            {
+                Console.WriteLine("Encontré que el título \"{0}\" tiene el ISBN: {1}", unTitulo, unISBN);
+            }
+            else
+            {
+                Console.WriteLine("El ISBN buscado no existe");
+            }
+
+            //Usando el indexador. Primero validamos la existencia (si no existe el uso del indexador arroja una excepción
+            string otraClave = "978-9-875-66833-1";
+            if (librosDeBorges.ContainsKey(otraClave))
+            {
+                Console.WriteLine("Encontré un título con el ISBN {0}: \"{1}\"", otraClave, librosDeBorges[otraClave]);
+            }
+            else
+            {
+                Console.WriteLine("No encontré ningún título con el ISBN: {0}", otraClave);
+            }
+
+            separador.EscribirPie("Fin Ejemplo 2");
+            #endregion
+
 
         }
 
     }
 
+    #region EncabezadoYPie
     struct EncabezadoYPieConsola
     {
         public void EscribirEncabezado(string Titulo)
@@ -82,5 +114,6 @@ namespace Cap10ListasOrdenadas
             return preparada;
         }
     }
+    #endregion
 
 }
