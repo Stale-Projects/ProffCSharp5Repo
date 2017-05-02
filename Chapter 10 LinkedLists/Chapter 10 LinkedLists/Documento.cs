@@ -63,9 +63,10 @@ namespace Chapter_10_LinkedLists
         }
 
         /// <summary>
-        /// Cerar excepcion desde datos serializados
+        /// Crear excepcion desde datos serializados
         /// Escenario: La Exception ocurre en una workstation remota y tengo
         /// que reproducir el error en una máquina local
+        /// No lo uso porque está diseñada para correr sólo localmente
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>

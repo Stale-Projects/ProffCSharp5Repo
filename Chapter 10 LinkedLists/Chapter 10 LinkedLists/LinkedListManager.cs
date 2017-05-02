@@ -24,7 +24,7 @@ namespace Chapter_10_LinkedLists
             LinkedListNode<Documento> nuevoNodo = new LinkedListNode<Documento>(doc);
             //Primero busco en la List un documento con la misma prioridad
             LinkedListNode<Documento> marcador = BuscarMarcador(doc.Prioridad);
-            //No encontre ninguno con prioridad igual o menor por lo tanto este es el primer nodo en la LinkedList
+            //No encontre ninguno con prioridad igual o menor por lo tanto éste nodo debe ser el primero en la LinkedList
             if (marcador == null)
             {
                 Marcadores.Add(nuevoNodo);

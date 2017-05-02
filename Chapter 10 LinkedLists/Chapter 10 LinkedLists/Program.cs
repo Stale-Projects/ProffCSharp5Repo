@@ -44,37 +44,42 @@ namespace Chapter_10_LinkedLists
                 Console.WriteLine(palabra);
             }
 
-            palabras.fin
             separador.EscribirPie("Fin Ejemplo 2");
             #endregion
 
 
             #region Ejemplo 3: Remove
-            //Lo siguiente remueve sólo una de las instancias de los items que tienen la misma stirng
-            EscribirInicio("Ejemplo 3");
+            //Lo siguiente remueve sólo una de las instancias de los items que tienen la misma string
+            separador.EscribirEncabezado("Ejemplo 3: Quitar elementos");
+
             palabras.Remove("Insertado");
             Console.WriteLine("Listar luego de borrar por primera vez");
             foreach (var palabra in palabras)
                 Console.WriteLine(palabra);
-            LinkedListNode<string> borrar = palabras.Find("Insertado");
-            palabras.Remove(borrar);
+            LinkedListNode<string> nodoABorrar = palabras.Find("Infiltrado");
+            palabras.Remove(nodoABorrar);
             Console.WriteLine("Listar luego de borrar por segunda vez");
             foreach (var palabra in palabras)
                 Console.WriteLine(palabra);
-            EscribirCierre();
+
+            separador.EscribirPie("Fin Ejemplo 3");
             #endregion
 
 
-            #region Ejemplo 4: Prueba de Enforcement de contrato con prioridad
-            EscribirInicio("Ejemplo 4");
+            #region Ejemplo 4: Prueba de Enforcement de contrato
+            separador.EscribirEncabezado("Ejemplo 4: Prueba de enforcement de contrato");
+
+            //Descomentar las dos líneas siguientes para provocar una excapción por incumplimiento de contrato
             //Documento doc = new Documento("Doc no válido", "Este doc tiene una prioridad demasiado alta", 10);
             //Console.WriteLine("Documento con título: {0}, Contenido: {1}, Prioridad: {2}", doc.Titulo, doc.Contenido, doc.Prioridad.ToString());
-            EscribirCierre();
+
+            separador.EscribirPie("Fin ejemplo 4");
             #endregion
 
 
             #region Ejemplo 5: Prueba simple de la Clase LinkedListManager
-            EscribirInicio("Ejemplo 5");
+            separador.EscribirEncabezado("Ejemplo 5: Prueba simple de la Clase LinkedListManager");
+
             LinkedListManager manager = new LinkedListManager();
             Documento dox = null;
             for (int i = 0; i < 10; i++)
@@ -96,10 +101,11 @@ namespace Chapter_10_LinkedLists
                 Console.WriteLine(item.ToString());
             }
 
-            EscribirCierre();
+            separador.EscribirEncabezado("Fin de Ejemplo 5");
             #endregion
 
-            #region Ejemplo 6: Prueba de performance vs LinkedList y List
+            #region Ejemplo 6: Prueba de performance LinkedList<T> vs List<T>
+            separador.EscribirEncabezado("Ejemplo 6: Prueba de performance LinkedList<T> vs List<T>");
             //Vamos a insertar 100,000 elementos en cada una para ver cuanto tardan comparativamente
 
             Stopwatch sw = new Stopwatch();
@@ -116,11 +122,12 @@ namespace Chapter_10_LinkedLists
                 diferencia = DateTime.Now.Subtract(referencia).Milliseconds;
 
                 titulo = "Doc " + diferencia.ToString();
-                prio = rnd.Next(0, 10);
+                prio = rnd.Next(0, 9);
                 llMgr.AgregarDocumento(new Documento(titulo, "Lame Content", (byte)prio));
             }
             sw.Stop();
-            Console.WriteLine("Pasaron {0} milisegundos", sw.ElapsedMilliseconds.ToString());
+
+            Console.WriteLine("Al ListaManager le tomó {0} milisegundos", sw.ElapsedMilliseconds.ToString());
 
             List<Documento> listaDocs = new List<Documento>();
             int indice;
@@ -132,33 +139,47 @@ namespace Chapter_10_LinkedLists
                 diferencia = DateTime.Now.Subtract(referencia).Milliseconds;
 
                 titulo = "Doc " + diferencia.ToString();
-                prio = rnd.Next(0, 10);
+                prio = rnd.Next(0, 9);
 
                 indice = listaDocs.FindLastIndex(d => d.Prioridad == prio);
-                //if
-                listaDocs.Insert(indice, new Documento(titulo, "Lame content", (byte)prio));
+                //Console.WriteLine("Indice: {0}", indice.ToString());
+                if (indice > -1)
+                {
+                    listaDocs.Insert(indice, new Documento(titulo, "Lame content", (byte)prio));
+                }
+                else
+                {
+                    listaDocs.Add(new Documento(titulo, "Lame content", (byte)prio));
+                }
+
 
             }
             sw.Stop();
-            Console.WriteLine("Pasaron {0} milisegundos", sw.ElapsedMilliseconds.ToString());
+            Console.WriteLine("A la List le tomó {0} milisegundos", sw.ElapsedMilliseconds.ToString());
 
-
-
+            separador.EscribirPie("Fin Ejemplo 6");
             #endregion
 
-
-
-
         }
 
-        public static void EscribirInicio(string titulo)
+
+
+
+
+        private static int BuscarIndice(List<Documento> lista, int prioridad)
         {
-            Console.WriteLine("======={0}===========", titulo);
-        }
-        public static void EscribirCierre()
-        {
-            Console.WriteLine("-------------------");
-            Console.WriteLine("");
+            int indice = -1;
+            indice = lista.FindLastIndex(d => d.Prioridad == prioridad);
+            if (prioridad >= 0 && indice == -1)
+            {
+                prioridad--;
+                indice = BuscarIndice(lista, prioridad);
+                return indice;
+            }
+            else
+            {
+                return indice;
+            }
         }
 
 
@@ -194,3 +215,7 @@ namespace Chapter_10_LinkedLists
     }
 
 }
+
+
+
+
