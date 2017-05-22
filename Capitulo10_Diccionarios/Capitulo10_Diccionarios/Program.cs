@@ -72,17 +72,34 @@ namespace Capitulo10_Diccionarios
             separador.EscribirPie("Fin Ejemplo 1");
             #endregion
 
+            string codigoDeFichaje = "";
+            char prefijo;
+            int numero;
+            string codigoFinal;
+            while (codigoDeFichaje.ToUpper() != "C")
+            {
+                Console.WriteLine("Ingresá el código:");
+                codigoDeFichaje = Console.ReadLine().ToUpper();
+                prefijo = codigoDeFichaje[0];
+                int.TryParse(codigoDeFichaje.Substring(1), out numero);
+
+                //codigoFinal = prefijo + numero.ToString("000000"); //string.Format("{0:000000}", codigoDeFichaje.Substring(1));
+                codigoFinal = prefijo + string.Format("{0:000000}", numero);// numero.ToString("000000");
+                Console.WriteLine("El código final es: {0}", codigoFinal);
+                Console.ReadLine();
+
+            }
 
 
 
-            Console.ReadLine();
+
         }
 
 
         /// <summary>
         /// Esta función de Hash utiliza un enfoque en el que mezclo los bits de un número
         /// Para un int32 tomo los 16 primeros bits y los pongo al final, y viceversa
-        /// Luego hago una operación & con el hexa 0xfffffff para quitar el signo
+        /// Luego hago una operación & con el hexa 0x7fffffff para quitar el signo
         /// Por último hago que el hash "caiga" en uno de los 190.000 buckets que tengo
         /// tomando el resto de la división por 190.000
         /// </summary>
@@ -101,7 +118,7 @@ namespace Capitulo10_Diccionarios
         }
 
         /// <summary>
-        /// En esta función utilizo el approach que vi usa Resharper
+        /// En esta función utilizo el enfoque que vi usa Resharper
         /// Tomando como base el hash del key (el que calcula el CLR)
         /// lo multiplico por un número primo grande (en este caso 397),
         /// le quito el signo y luego tomo el resto como en la función anterior
