@@ -1,8 +1,25 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿// ==++==
+// 
+//   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.
+// 
+// ==--==
+/*============================================================
+**
+** Clase:  Futbolista
+** 
+** <OWNER>MarceVolta</OWNER>
+**
+** Propósito: Utilización para ejemplo de funcionalidad de diccionarios en
+** el libro: De Cabeza a C#
+** Descripciones debajo en el summary
+===========================================================*/
+
 
 namespace Capitulo10_Diccionarios
 {
+    using System;
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// Clase utilizada para probar la funcionalidad de la clase genérica Dictionary
     /// El ID de fichaje del futbolista es una instancia de la struct <see cref="FichaDeFutbolista"/> 

@@ -1,4 +1,21 @@
-﻿using System;
+﻿// ==++==
+// 
+//   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.
+// 
+// ==--==
+/*============================================================
+**
+** Clase:  Program
+** 
+** <OWNER>MarceVolta</OWNER>
+**
+** Propósito: Proveer ejemplos de código para el capítulo 10 del libro
+** "De Cabeza a C#"
+** Descripciones debajo en el summary
+===========================================================*/
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,6 +47,19 @@ namespace Capitulo10_Diccionarios
     /// Observa que el objeto <see cref="Futbolista"/> puede ser tan complejo como querramos sin afectar el mecanismo 
     /// de búsqueda ni su rapidez. La búsqueda utiliza solamente el ID,
     /// si ntener en cuenta el resto de los campos o propiedades de Futbolista. Este es el poder del Diccionario 
+    /// 
+    /// Ejemplo 3: Ejemplo simple de Lookups
+    /// Para utilizar un Lookup, debemos primero crear una colección que impemente IEnumerable 
+    /// (por ejemplo una List genérica), almacenar en ella los objetos que necesitemos y luego usar
+    /// el método ToLookup para crear el Lookup. Este método lleva un delegado como argumento
+    /// El delegado (que se puede proveer por medio de una Lambda), se utiliza para seleccionar los 
+    /// elementos que necesitemos de la colección, los que se pueden enumerar con un bloque foreach. 
+    /// Como es habitual, los objetos que guardamos son objetos simples creados para el ejemplo. 
+    /// En este caso, los objetos creados como instancias de la clase <see cref="Alumno"/> representan 
+    /// alumnos y sus calificaciones. Todas las propiedades se fijan en el constructor.
+    /// En el override ToString() tomamos las propiedades para mostrarlas por consola. 
+    /// Atención a la sintaxis usada para seleccionar usando un valor de calificación: buscarAlumnos[2.5f]
+    /// Por supuesto que descreemos de las calificaciones como indicadores de la capacidad de una persona!
     /// </summary>
     class Program
     {
@@ -162,7 +192,44 @@ namespace Capitulo10_Diccionarios
             #endregion
 
 
+            #region Ejemplo 3: Uso de Lookups
+            separador.EscribirEncabezado("Ejemplo 3: Uso de Lookups");
 
+            var alumnos = InicializarLista();
+
+            var buscarAlumnos = alumnos.ToLookup(x => x.Calificacion);
+
+            foreach (var malEstudiante in buscarAlumnos[2.5f])
+            {
+                Console.WriteLine(malEstudiante.ToString());
+            }
+
+            separador.EscribirPie("Fin Ejemplo 3");
+            #endregion
+
+        }
+
+
+        /// <summary>
+        /// Esta función se usa para generar una lista de alumnos.
+        /// La sacamos del ejemplo de uso del Lookup para hacer más claro el código
+        /// </summary>
+        /// <returns></returns>
+        private static List<Alumno> InicializarLista()
+        {
+            List<Alumno> alumnos = new List<Alumno>
+            {
+                new Alumno("Albert","Einstein", 2.5f),
+                new Alumno("Charles", "Darwin", 3.0f),
+                new Alumno ("Werner", "Heisemberg", 2.5f),
+                new Alumno ("Marie", "Sklodowska", 2.5f),
+                new Alumno("Thomas A.", "Edison", 9.5f),
+                new Alumno("Ada", "Lovelace", 7.5f),
+                new Alumno("Nikola", "Tesla", 2.5f),
+                new Alumno("Max", "Planck", 2.5f),
+                new Alumno("Henrietta", "Swan Leavitt", 2.5f)
+            };
+            return alumnos;
         }
 
 
