@@ -36,12 +36,32 @@ namespace Capitulo10_ColeccionesObservables
     /// En el manejador de evento recibimos dos objetos: el sender (de tipo object) 
     /// y NotifyCollectionChangedEventArgs que contiene información sobre el evento: 
     /// <list type="bullet">
-    /// <item>Action: es una enumeración del tipo de acción que originó el evento</item>
-    /// <item>OldItems es una lista que se llena con los elementos que fueron removidos
-    /// (si es que éste es el tipo de acción que disparó el evento)</item>
-    /// <item>OldStartingIndex es el índice del primer elemento que fue removido o reemplazado</item>
-    /// <item>NewItems es análogo a OldItems pero contiene los elementos que fueron agregados</item>
-    /// <item>NewStartingIndex es análogo a OldStartingIndex para el primer elemento agregado</item>
+    /// <item>
+    /// <description>
+    /// Action: es una enumeración del tipo de acción que originó el evento
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// OldItems es una lista que se llena con los elementos que fueron removidos
+    /// (si es que éste es el tipo de acción que disparó el evento)
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// OldStartingIndex es el índice del primer elemento que fue removido o reemplazado
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// NewItems es análogo a OldItems pero contiene los elementos que fueron agregados
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// NewStartingIndex es análogo a OldStartingIndex para el primer elemento agregado
+    /// </description>
+    /// </item>
     /// </list>
     /// </summary>
     class Program
