@@ -21,6 +21,7 @@
 
 
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -80,6 +81,28 @@ namespace Capitulo10_ColeccionesObservables
             numeros.RemoveAt(4);
             numeros.Move(4, 2);
             numeros[4] = "Reemplazado";
+
+            int[] arrayDeEnteros = new int[1];
+            arrayDeEnteros[0] = 5547;
+            BitArray arrayDeBits = new BitArray(arrayDeEnteros);
+            //arrayDeBits[1] = true;
+            //for (int i = 0; i < 16; i++)
+            //{
+            //    arrayDeBits.Set(2 * i, true);
+            //}
+            bool valor;
+            string representacion = "";
+
+            for (int i = 0; i < arrayDeBits.Length; i++)
+            {
+                valor = arrayDeBits.Get(i);
+                representacion += (valor == true ? 1 : 0).ToString();
+            }
+            Console.WriteLine(representacion);
+
+
+
+
         }
 
         static void Numeros_Change(object sender, NotifyCollectionChangedEventArgs e)
