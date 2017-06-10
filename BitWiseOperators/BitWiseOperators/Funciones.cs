@@ -1,4 +1,6 @@
-﻿namespace BitWiseOperators
+﻿using System.Collections.Specialized;
+
+namespace BitWiseOperators
 {
     class Funciones
     {
@@ -40,6 +42,7 @@
 
         public static string GetIntBinaryStringMV(int value)
         {
+
             char[] charArray = new char[32];
             for (int i = 31; i >= 0; i--)
             {
@@ -48,6 +51,12 @@
             }
 
             return new string(charArray);
+        }
+
+        public static void EscribirBitsDeInteger(int valor)
+        {
+            BitVector32 bv32 = new BitVector32(valor);
+            System.Console.WriteLine(bv32.ToString());
         }
     }
 }

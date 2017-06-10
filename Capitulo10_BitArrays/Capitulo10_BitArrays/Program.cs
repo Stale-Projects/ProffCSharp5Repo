@@ -49,9 +49,11 @@ namespace Capitulo10_BitArrays
         /// Por ejemplo, _masks[15] = {00000000 00000000 10000000 00000000}
         /// Finalmente usamos las máscaras para acceder en forma simple a los bits del BitVector32 y fijar su valor por medio de un 
         /// indexador. 
+        /// También puedes usar máscaras creadas por ti si necesidad de usar el método CreateMask. Una máscara es un entero (int) por 
+        /// lo que puedes diseñar tu porpia máscara fijando los bits que quieras. 
         /// Ten en cuenta que, si usas una máscara que tenga más de un bit seteado en 1, cuando la utilices para cambiar el valor
         /// del BitVector32 pasándola como parámetro, lo que estarás haciendo en verdad es fijar el valor de todos los bits de la
-        /// máscara que están seteados a 1. Este tipo de código puede volverse muy confuso
+        /// máscara que están seteados a 1. Este tipo de código puede volverse muy confuso.
         /// </summary>
         /// <param name="args"></param>
         static void Main(string[] args)
@@ -121,7 +123,33 @@ namespace Capitulo10_BitArrays
             Console.WriteLine("La representación del BitVector32 usando la sobrecarga de ToString es la siguiente:");
             Console.WriteLine(bitVector.ToString());
 
+
             separador.EscribirPie("Fin Ejemplo 3");
+            #endregion
+
+            #region Ejemplo 4
+            //ToDo: Crear un buen ejemplo de BitVector32 para representar redes
+
+            BitVector32 direccionIPv4Server = new BitVector32();
+            BitVector32.Section primerByte = BitVector32.CreateSection(256);
+            BitVector32.Section segundoByte = BitVector32.CreateSection(256, primerByte);
+            BitVector32.Section tercerByte = BitVector32.CreateSection(256, segundoByte);
+            BitVector32.Section cuartoByte = BitVector32.CreateSection(256, tercerByte);
+
+            direccionIPv4Server[primerByte] = 10;
+            direccionIPv4Server[segundoByte] = 0;
+            direccionIPv4Server[tercerByte] = 0;
+            direccionIPv4Server[cuartoByte] = 100;
+
+            Console.WriteLine("La representación binaria de la direccion IP 10.0.0.100 es: {0}", direccionIPv4Server.ToString());
+
+            direccionIPv4Server[primerByte] = 257;
+            direccionIPv4Server[segundoByte] = 256;
+            direccionIPv4Server[tercerByte] = 256;
+            direccionIPv4Server[cuartoByte] = 256;
+
+            Console.WriteLine("La representación binaria de la direccion IP 10.0.0.100 es: {0}", direccionIPv4Server.ToString());
+
             #endregion
 
 
