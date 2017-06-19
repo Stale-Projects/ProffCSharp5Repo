@@ -1,6 +1,7 @@
 ﻿// ==++==// //   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.// // ==--==/*============================================================** Proyecto: MecanismosDeSoloLectura** Clase:  ClaseConfiable** ** <OWNER>MarceVolta</OWNER>**** Propósito: Proveer ejemplos de código para el capítulo 10 del libro*  "De Cabeza a C#"** ClaseConfiable simula usar el objeto, pero en realidad manipula sus datos*  cambiando las propiedades del objeto referido por el campo Hogar*  No se cambia la referencia, sino el objeto mismo* ===========================================================*/
 
 using System;
+using System.Collections.ObjectModel;
 
 namespace MecanismosDeSoloLectura
 {
@@ -21,6 +22,19 @@ namespace MecanismosDeSoloLectura
             unaPersona.Hogar.Direccion = "10 Downing Street";
             unaPersona.Hogar.Superficie = 2576;
 
+        }
+
+        public static void LeerColeccionSoloLectura(ReadOnlyCollection<Persona> coleccion)
+        {
+            Casa hogarDeMoriarty = new Casa("46 Harley Street, London", 512);
+            Persona moriarty = new Persona("James", "Moriarty", hogarDeMoriarty);
+            //La siguientes dos líneas darían error de compilación
+            //coleccion[0] = moriarty;
+            //coleccion[0].Hogar = hogarDeMoriarty;
+            //Pero sigue siendo posible ejecutar esto:
+            coleccion[0].Hogar.Direccion = hogarDeMoriarty.Direccion;
+            coleccion[0].Hogar.Superficie = hogarDeMoriarty.Superficie;
+            
         }
     }
 }
