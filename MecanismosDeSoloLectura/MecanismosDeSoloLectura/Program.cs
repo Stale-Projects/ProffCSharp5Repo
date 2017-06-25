@@ -1,8 +1,31 @@
-﻿// ==++==// //   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.// // ==--==/*============================================================** Proyecto: MecanismosDeSoloLectura** Clase:  Program** ** <OWNER>MarceVolta</OWNER>**** Propósito: Proveer ejemplos de código para el capítulo 10 del libro*  "De Cabeza a C#"** Este proyecto mostramos las distintas maneras en que se puede crear elementos*  de sólo lectura, y las limitaciones de cada método*   ** Mostramos cuatro mecanismos: * El primero se basa en campos y propiedades de solo lectura (Ejemplo 1)* El Segundo se basa en utilizar clases de sólo lectura, como por ejemplo: ReadOnlyCollection<T> (Ejemplo 2)* * * ===========================================================*/
+﻿// ==++==
+// 
+//   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.
+// 
+// ==--==
+/*============================================================
+** Proyecto: MecanismosDeSoloLectura
+** Clase:  Program
+** 
+** <OWNER>MarceVolta</OWNER>
+**
+** Propósito: Proveer ejemplos de código para el capítulo 10 del libro
+*  "De Cabeza a C#"
+** Este proyecto mostramos las distintas maneras en que se puede crear elementos
+*  de sólo lectura, y las limitaciones de cada método
+*   
+** Mostramos cuatro mecanismos: 
+* El primero se basa en campos y propiedades de solo lectura (Ejemplo 1)
+* El Segundo se basa en utilizar clases de sólo lectura, como por ejemplo: ReadOnlyCollection<T> (Ejemplo 2)
+* 
+* 
+* 
+===========================================================*/
 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Immutable;
 
 namespace MecanismosDeSoloLectura
 {
@@ -51,7 +74,24 @@ namespace MecanismosDeSoloLectura
             _separador.EscribirPie("Fin Ejemplo 2");
             #endregion
 
-            
+            #region Ejemplo 3
+            int[] arrayDeEnteros = new int[] { 1, 2, 3 };
+            ReadOnlyCollection<int> enterosReadOnly = new ReadOnlyCollection<int>(arrayDeEnteros);
+
+            Console.WriteLine("Antes de cambiar el array");
+            foreach (int entero in enterosReadOnly)
+            {
+                Console.WriteLine(entero.ToString());
+            }
+            arrayDeEnteros[0] = 0;
+            Console.WriteLine("Después de cambiar el array");
+            foreach (int entero in enterosReadOnly)
+            {
+                Console.WriteLine(entero.ToString());
+            }
+
+            #endregion
+
 
         }
 
@@ -67,8 +107,16 @@ namespace MecanismosDeSoloLectura
             Console.WriteLine("Hogar: {0}", unaPersona.Hogar.Direccion + ", " + unaPersona.Hogar.Superficie.ToString() + " metros cuadrados");
         }
 
+        
+
+
+
     }
-    /// <summary>    /// Esta struct encapsula dos métodos para mostrar un encabezado y un pie     /// para cada ejemplo, de modo que podamos verlos por separado en la salida de     /// consola e identificar los resultados de cada ejemplo    /// </summary>
+    /// <summary>
+    /// Esta struct encapsula dos métodos para mostrar un encabezado y un pie 
+    /// para cada ejemplo, de modo que podamos verlos por separado en la salida de 
+    /// consola e identificar los resultados de cada ejemplo
+    /// </summary>
     struct EncabezadoYPieConsola
     {
         public void EscribirEncabezado(string Titulo)
