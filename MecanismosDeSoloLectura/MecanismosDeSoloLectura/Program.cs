@@ -93,6 +93,15 @@ namespace MecanismosDeSoloLectura
             #endregion
 
 
+            LineaDeOrden tornillos = new LineaDeOrden(500, 1.25m, 0.0f);
+            LineaDeOrden tuercas = new LineaDeOrden(500, 0.75m, 0.0f);
+            List<LineaDeOrden> lineas = new List<LineaDeOrden> { tornillos, tuercas };
+            Orden ordenDeFerreteria = new Orden(lineas);
+            Orden ordenDeFerreteriaConDescuento =
+                ordenDeFerreteria.ModificarLineaDeOrden(tornillos, tornillos.ConDescuento(0.2f));
+            
+
+
         }
 
 
