@@ -92,6 +92,7 @@ namespace MecanismosDeSoloLectura
 
             #endregion
 
+            #region Ejemplo 4: Uso simple de Colecciones Inmutables con métodos de extensión
 
             LineaDeOrden tornillos = new LineaDeOrden(500, 1.25m, 0.0f);
             LineaDeOrden tuercas = new LineaDeOrden(500, 0.75m, 0.0f);
@@ -99,7 +100,24 @@ namespace MecanismosDeSoloLectura
             Orden ordenDeFerreteria = new Orden(lineas);
             Orden ordenDeFerreteriaConDescuento =
                 ordenDeFerreteria.ModificarLineaDeOrden(tornillos, tornillos.ConDescuento(0.2f));
+
             
+
+            #endregion
+
+            #region Ejemplo 5: Otro modo de uso con métodos estáticos
+
+            
+            int[] enterosPrimos = new int[] { 2, 3, 5, 7, 11 };
+            ImmutableArray<int> enterosArrayInmutable = ImmutableArray.Create<int>(enterosPrimos);
+            ImmutableArray<int> enterosArrayInmutableNuevo = ImmutableArray.ToImmutableArray<int>(enterosPrimos);
+
+
+
+            ImmutableArray<int> enterosArrayInmutableUltimo = enterosPrimos.ToImmutableArray<int>();
+            
+
+            #endregion
 
 
         }
