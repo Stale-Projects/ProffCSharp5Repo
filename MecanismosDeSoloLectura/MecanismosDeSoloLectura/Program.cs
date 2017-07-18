@@ -24,8 +24,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 
 namespace MecanismosDeSoloLectura
 {
@@ -75,6 +75,8 @@ namespace MecanismosDeSoloLectura
             #endregion
 
             #region Ejemplo 3
+            _separador.EscribirEncabezado("Ejemplo 3 - Colecciones de Sólo Lectura");
+
             int[] arrayDeEnteros = new int[] { 1, 2, 3 };
             ReadOnlyCollection<int> enterosReadOnly = new ReadOnlyCollection<int>(arrayDeEnteros);
 
@@ -90,6 +92,7 @@ namespace MecanismosDeSoloLectura
                 Console.WriteLine(entero.ToString());
             }
 
+            _separador.EscribirPie("Fin ejemplo 3");
             #endregion
 
             #region Ejemplo 4: Uso simple de Colecciones Inmutables con métodos de extensión
@@ -101,13 +104,13 @@ namespace MecanismosDeSoloLectura
             Orden ordenDeFerreteriaConDescuento =
                 ordenDeFerreteria.ModificarLineaDeOrden(tornillos, tornillos.ConDescuento(0.2f));
 
-            
+
 
             #endregion
 
             #region Ejemplo 5: Otro modo de uso con métodos estáticos
+            //Sin salida en la consola, sólo para mostrar como se utilizan
 
-            
             int[] enterosPrimos = new int[] { 2, 3, 5, 7, 11 };
             ImmutableArray<int> enterosArrayInmutable = ImmutableArray.Create<int>(enterosPrimos);
             ImmutableArray<int> enterosArrayInmutableNuevo = ImmutableArray.ToImmutableArray<int>(enterosPrimos);
@@ -115,10 +118,61 @@ namespace MecanismosDeSoloLectura
 
 
             ImmutableArray<int> enterosArrayInmutableUltimo = enterosPrimos.ToImmutableArray<int>();
-            
+
 
             #endregion
 
+            #region Ejemplo 6: Métodos encadenados (interfaces fluídas)
+            _separador.EscribirEncabezado("Ejemplo 6: Métodos encadenados - Interfases fluidas");
+
+            //Lo siguiente funciona pero no es eficiente
+
+            ImmutableArray<int> enterosParesVacio = ImmutableArray.Create<int>();
+            ImmutableArray<int> enterosParesCompleto = enterosParesVacio.Add(2).Add(4).Add(6).Add(8).Add(10);
+            Console.WriteLine("Enumeración del primer array que comenzó vacío");
+            foreach (int item in enterosParesVacio)
+            {
+                Console.WriteLine(item.ToString());
+
+            }
+
+            Console.WriteLine("Enumeración del segundo array");
+            foreach (int item in enterosParesCompleto)
+            {
+                Console.WriteLine(item.ToString());
+
+            }
+
+            //Es preferible ésto:
+            int[] enterosParesEficientes = new int[5] { 2, 4, 6, 8, 10 };
+            ImmutableArray<int> enterosParesInmutables = enterosParesEficientes.ToImmutableArray<int>();
+
+            Console.WriteLine("Veamos que hay en el tercer array");
+            foreach (int item in enterosParesInmutables)
+            {
+                Console.WriteLine(item.ToString());
+
+            }
+
+
+            //Me había olvidado de agregar algunos pares más:
+
+            ImmutableArray<int>.Builder bob = enterosParesInmutables.ToBuilder();
+            bob.Add(12);
+            bob.Add(14);
+
+            ImmutableArray<int> nuevosEnterosPares = bob.ToImmutableArray<int>();
+
+
+            Console.WriteLine("Sí pudimos! Gracias, Bob");
+            foreach (int item in nuevosEnterosPares)
+            {
+                Console.WriteLine(item.ToString());
+
+            }
+
+            _separador.EscribirPie("Fin ejemplo 6");
+            #endregion
 
         }
 
@@ -134,7 +188,7 @@ namespace MecanismosDeSoloLectura
             Console.WriteLine("Hogar: {0}", unaPersona.Hogar.Direccion + ", " + unaPersona.Hogar.Superficie.ToString() + " metros cuadrados");
         }
 
-        
+
 
 
 
