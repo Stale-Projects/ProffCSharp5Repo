@@ -171,6 +171,15 @@ namespace MecanismosDeSoloLectura
 
             }
 
+            //Aún hay más!
+            ImmutableList<int> listaDeEnteros = bob.ToImmutableList<int>();
+
+            Console.WriteLine("Finalmente, iteremos sobre la lista armada en base al mismo constructor");
+            foreach (int item in listaDeEnteros)
+            {
+                Console.WriteLine(item.ToString());
+            }
+
             _separador.EscribirPie("Fin ejemplo 6");
             #endregion
 
