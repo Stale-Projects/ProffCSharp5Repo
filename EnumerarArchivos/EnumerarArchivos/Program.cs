@@ -1,4 +1,23 @@
-﻿using System;
+﻿// ==++==
+// 
+//   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.
+// 
+// ==--==
+/*============================================================
+** Proyecto: EnumerarArchivos
+** Capítulo 11: LINQ 
+** Clase:  Program
+** 
+** <OWNER>MarceVolta</OWNER>
+**
+** Propósito: Proveer ejemplos de código para el capítulo 11 del libro
+** "De Cabeza a C#"
+** Este proyecto provee ejemplos de Queries LINQ sobre objetos
+* del tipo Directorio y otras colecciones creadas para ejemplos más
+* sencillos.
+** Descripciones debajo en el summary
+===========================================================*/
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,9 +28,6 @@ namespace EnumerarArchivos
     class Program
     {
 
-        // This query will produce the full path for all .txt files  
-        // under the specified folder including subfolders.  
-        // It orders the list according to the file name.  
         static void Main()
         {
             FileInfo[] todosMisArchivos = RecuperarTodosMisArchivos();
@@ -65,17 +81,69 @@ namespace EnumerarArchivos
             }
 
             //Filtrado por tipo
+            //Este ejemplo se hizo demasiado complejo para algo simple
+            //var todosMisDirectorios = RecuperarTodosMisDirectoriosYArchivos();
+            //var cuentaDeDirectorios = todosMisDirectorios.Distinct().Count();
+            //Console.WriteLine("Son {0} directorios", cuentaDeDirectorios.ToString());
+            //foreach (var directorio in todosMisDirectorios.Distinct())
+            //{
+            //    Console.WriteLine("Directorio: <{0}>", directorio.FullName);
+            //}
 
-            var todosMisDirectorios = RecuperarTodosMisDirectoriosYArchivos();
-            var cuentaDeDirectorios = todosMisDirectorios.Distinct().Count();
-            Console.WriteLine("Son {0} directorios", cuentaDeDirectorios.ToString());
-            foreach (var directorio in todosMisDirectorios.Distinct())
+
+            //Filtrado por tipo
+            Console.WriteLine("Filtrado por tipo");
+            object[] datos = { "uno", 2, 3, "cuatro", "cinco", 6 };
+            var query = datos.OfType<string>();
+            foreach (var s in query)
             {
-                Console.WriteLine("Directorio: <{0}>", directorio.FullName);
+                Console.WriteLine(s);
             }
 
 
+            //Operador From compuesto
+            //Primero creamos una lista de todos los subdirectorios de Mis Documentos
+            List<DirectoryInfo> misDirectoryInfo = RecuperarTodosMisDirectorios().ToList<DirectoryInfo>();
+            List<Directorio> misDirectorios = new List<Directorio>();
+            foreach (var directorio in misDirectoryInfo)
+            {
+                misDirectorios.Add(new Directorio(directorio));
+            }
 
+            foreach (var directorio in misDirectorios)
+            {
+                Console.WriteLine("Nombre: {0}", directorio.Nombre);
+            }
+
+            //Ahora listamos solo los directorios que tienen archivos TXT dentro
+            IEnumerable<string> directoriosConTXT =
+                from dir in misDirectorios
+                from archivo in dir.Archivos
+                where archivo.Extension == ".txt"
+                select (dir.Nombre + " - " + archivo.Name);
+
+            Console.WriteLine("Nombres de Directorios que contienen TXTs");
+            foreach (var descripcion in directoriosConTXT)
+            {
+                Console.WriteLine(descripcion);
+            }
+
+
+            //Para ejemplificar el uso de OrderBy modificamos ligeramente 
+            //el query anterior
+            //Ahora listamos solo los directorios que tienen archivos TXT dentro
+            IEnumerable<string> directoriosConTXTOrdenados =
+                from dir in misDirectorios
+                from archivo in dir.Archivos
+                where archivo.Extension == ".txt"
+                orderby archivo.CreationTime
+                select (dir.Nombre + " - " + archivo.Name + "Creado en: " + archivo.CreationTime.ToLongDateString());
+
+            Console.WriteLine("Nombres de Directorios que contienen TXTs");
+            foreach (var descripcion in directoriosConTXTOrdenados)
+            {
+                Console.WriteLine(descripcion);
+            }
 
             return;
 
@@ -148,24 +216,34 @@ namespace EnumerarArchivos
         }
 
 
+        /// <summary>
+        /// Esta función obtiene un array de objetos FileInfo que representan 
+        /// a los archivos contenidos en el directorio Mis Documentos
+        /// Para ello utilizamos la función GetDirectoryName para obtener el nombre del 
+        /// directorio. Esto permite que utilicemos el código en cualquier sistema de 
+        /// archivos Windows. Recuerda que no se deben usar variables explícitas a menos 
+        /// que sea estrictamente necesario; si usara directamente el nombre "Mis Documentos"
+        /// no podría ejecutar este código en un equipo con el sistema operativo en otro 
+        /// idioma distinto al Español
+        /// La creación del objeto de tipo DirectoryInfo equivale a tomar una foto del estado del 
+        /// directorio en ese momento
+        /// El método GetFiles devuelve un array de objetos de tipo FileInfo
+        /// Separamos la recuperación de los archivos de la definición del query
+        /// para lograr la ejecución diferida 
+        /// Creamos un query que lista todos los archivos txt  
+        /// el segundo argumento le indica a GetFiles que busque en todos los 
+        /// subdirectorios de Mis Documentos
+        /// </summary>
+        /// <returns>FileInfo[]</returns>
         private static FileInfo[] RecuperarTodosMisArchivos()
         {
-            //Primero obtenemos la localización del directorio Mis Documentos 
             string misDocumentos = Path.GetDirectoryName(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
             FileInfo[] todosMisArchivos = null;
 
-            //Tomamos una imagen instantánea del directorio My Documents
             var dir = new DirectoryInfo(misDocumentos);
 
             try
             {
-                //El método GetFiles devuelve un array de objetos de tipo FileInfo
-                //Separamos la recuperación de los archivos de la definición del query
-                //para lograr la ejecución diferida 
-                //Creamos un query que lista todos los archivos txt  
-                //el segundo argumento le indica a GetFiles que busque en todos los 
-                //subdirectorios de Mis Documentos
-
                 todosMisArchivos = dir.GetFiles("*.*", SearchOption.AllDirectories);
 
             }
@@ -187,7 +265,8 @@ namespace EnumerarArchivos
         }
 
 
-        private static IEnumerable<DirectoryInfo> RecuperarTodosMisDirectoriosYArchivos()
+
+        private static IEnumerable<DirectoryInfo> RecuperarTodosMisDirectorios()
         {
             //Primero obtenemos la localización del directorio Mis Documentos 
             string misDocumentos = Path.GetDirectoryName(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
@@ -197,7 +276,8 @@ namespace EnumerarArchivos
 
 
             //Ahora, obtengo recursivamente todos los subdirectorios 
-            IEnumerable<DirectoryInfo> todosMisSubdirectorios = RecuperarTodosLosSubdirectorios(dir);
+            IEnumerable<DirectoryInfo> todosMisSubdirectorios = dir.GetDirectories("*.*", SearchOption.AllDirectories);
+            //IEnumerable<DirectoryInfo> todosMisSubdirectorios = RecuperarTodosLosSubdirectorios(dir);
             return todosMisSubdirectorios;
 
             //IEnumerable todosMisDirectoriosYArchivos = null;
@@ -232,7 +312,13 @@ namespace EnumerarArchivos
             //return todosMisArchivos;
         }
 
-
+        /// <summary>
+        /// Esta función la escribí para obtener los sub-directorios en forma recursiva porque 
+        /// no sabía que habia una sobrecarga de GetDirectories() que me permitía obtener todos los
+        /// ubdirectorios en forma recursiva
+        /// </summary>
+        /// <param name="directorio"></param>
+        /// <returns></returns>
         private static IEnumerable<DirectoryInfo> RecuperarTodosLosSubdirectorios(DirectoryInfo directorio)
         {
             IEnumerable<DirectoryInfo> _subdirectorios = directorio.GetDirectories();
@@ -257,6 +343,42 @@ namespace EnumerarArchivos
 
 
     }
+
+    /// <summary>
+    /// Esta struct encapsula dos métodos para mostrar un encabezado y un pie 
+    /// para cada ejemplo, de modo que podamos verlos por separado en la salida de 
+    /// consola e identificar los resultados de cada ejemplo
+    /// </summary>
+    struct EncabezadoYPieConsola
+    {
+        public void EscribirEncabezado(string Titulo)
+        {
+            string encabezado = PrepararString(Titulo, '*');
+            Console.WriteLine(encabezado);
+            Console.WriteLine("");
+        }
+
+        public void EscribirPie(string Titulo)
+        {
+            string pie = PrepararString(Titulo, '-');
+            Console.WriteLine("");
+            Console.WriteLine(pie);
+            Console.WriteLine("");
+            Console.WriteLine("");
+        }
+
+        private string PrepararString(string Literal, char Caracter)
+        {
+            if (Literal.Length > 80)
+                Literal = Literal.Substring(1, 80);
+            int numeroDeAsteriscos = 80 - Literal.Length;
+            string preparada = new string(Caracter, (int)(numeroDeAsteriscos / 2)) + Literal +
+            new string(Caracter, (int)(numeroDeAsteriscos / 2));
+            return preparada;
+        }
+    }
+
+
 
 
 }
