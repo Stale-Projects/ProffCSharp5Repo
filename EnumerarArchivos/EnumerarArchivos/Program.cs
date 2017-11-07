@@ -15,7 +15,7 @@
 ** Este proyecto provee ejemplos de Queries LINQ sobre objetos
 * del tipo Directorio y otras colecciones creadas para ejemplos más
 * sencillos.
-** Descripciones debajo en el summary
+** Descripciones debajo
 ===========================================================*/
 using System;
 using System.Collections.Generic;
@@ -30,11 +30,14 @@ namespace EnumerarArchivos
 
         static void Main()
         {
+            //Separador
+            EncabezadoYPieConsola separador = new EncabezadoYPieConsola();
+
             FileInfo[] todosMisArchivos = RecuperarTodosMisArchivos();
 
+            #region Ejemplo #01: Operador Where
 
-            //Uso de Operador de Filtro Where: 
-            //Recupero todos los archivos txt
+            separador.EscribirEncabezado("Ejemplo #01: Uso de Operador Where");
             var archivosTXT = from archivo in todosMisArchivos
                               where archivo.Extension == ".txt"
                               select archivo;
@@ -44,6 +47,132 @@ namespace EnumerarArchivos
             {
                 Console.WriteLine(archivoTXT.Name);
             }
+            separador.EscribirPie("Fin Ejemplo #01");
+
+            #endregion
+
+            #region Ejemplo #02: Operador Where con métodos de Extensión
+            separador.EscribirEncabezado("Ejemplo #02: Operador Where con métodos de Extensión");
+            var buscarUnaVezMas = todosMisArchivos.Where(f => f.Extension == ".txt").OrderBy(f => f.Name).Select(f => f);
+
+            //Ejecutar el query  
+            foreach (FileInfo archivo in buscarUnaVezMas)
+            {
+                Console.WriteLine(archivo.FullName);
+            }
+            separador.EscribirPie("Fin Ejemplo #02");
+            #endregion
+
+            #region Ejemplo #03: Ejecución diferida
+            separador.EscribirEncabezado("Ejemplo #03: Ejecución diferida");
+
+            var nombres = new List<string> { "Alberto", "Carlos", "Cintia", "Pedro", "Laura" };
+            var nombresConA = from n in nombres
+                              where n.StartsWith("A")
+                              orderby n
+                              select n;
+
+            Console.WriteLine("Primera pasada");
+            foreach (string name in nombresConA)
+            {
+                Console.WriteLine(name);
+            }
+            Console.WriteLine();
+            nombres.Add("Alejandra");
+            nombres.Add("Pablo");
+            nombres.Add("Andrés");
+            nombres.Add("David");
+            Console.WriteLine("Segunda Pasada");
+
+
+            foreach (string name in nombresConA)
+            {
+                Console.WriteLine(name);
+            }
+
+            separador.EscribirPie("Fin Ejemplo #03");
+            #endregion
+
+
+            #region Ejemplo 04: Ejecución parcialmente diferida
+
+            //Primero obtenemos la localización del directorio Mis Documentos 
+            string misDocumentos = Path.GetDirectoryName(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            //Tomamos una imagen instantánea del directorio My Documents
+            var dir = new DirectoryInfo(misDocumentos);
+
+
+            //Creamos un query que lista todos los archivos txt  
+            //El método GetFiles devuelve un array de objetos de tipo FileInfo
+            //el segundo argumento le indica a GetFiles que busque en todos los 
+            //subdirectorios de Mis Documentos
+            var buscarArchivosTXT =
+            from archivo in dir.GetFiles("*.*", SearchOption.AllDirectories)
+            where archivo.Extension == ".txt"
+            orderby archivo.Name
+            select archivo;
+
+            //Sólo al llegar aquí se ejecuta el query  
+            Console.WriteLine("Resultado Inicial");
+
+            foreach (FileInfo archivo in buscarArchivosTXT)
+            {
+                Console.WriteLine(archivo.FullName);
+            }
+
+
+            //Creemos un nuevo archivo para complicar las cosas
+            CrearArchivo(misDocumentos);
+
+            //Reconstruyamos el array para traer los archivos nuevos
+            todosMisArchivos = dir.GetFiles("*.*", SearchOption.AllDirectories);
+
+            //Ejecutemos el query nuevamente, sin tocar la definición
+            Console.WriteLine("Resultado luego de crear un archivo nuevo");
+            foreach (FileInfo archivo in buscarArchivosTXT)
+            {
+                Console.WriteLine(archivo.FullName);
+            }
+
+            //Un modo alternativo de ejecutar el mismo query
+            var buscarUnaVezMas = dir.GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Extension == ".txt").OrderBy(f => f.Name).Select(f => f);
+
+            //Ejecutar el query  
+            foreach (FileInfo archivo in buscarUnaVezMas)
+            {
+                Console.WriteLine(archivo.FullName);
+            }
+
+
+            // Usando como base la búsqueda anterior, creamos y ejecutamos otra búsqueda 
+            // que nos diga: cuántos son, y cuál es el más nuevo
+            // Aquí no se ejecuta la búsqueda hasta que no se produce la llamada a Last()
+
+            var archivoMasReciente =
+                (from archivo in buscarArchivosTXT
+                 orderby archivo.CreationTime
+                 select new { archivo.FullName, archivo.CreationTime })
+                .Last();
+
+            Console.WriteLine("\r\nEl archivo más reciente de tipo .txt es {0}. Creado en: {1}",
+                archivoMasReciente.FullName, archivoMasReciente.CreationTime);
+
+            //Creamos un nuevo archivo TXT para producir un resultado diferente en el query
+            CrearArchivo(misDocumentos);
+
+            var archivoRecienCreado =
+                (from archivo in buscarArchivosTXT
+                 orderby archivo.CreationTime
+                 select new { archivo.FullName, archivo.CreationTime })
+                .Last();
+
+            Console.WriteLine("\r\nEste es el archivo que acabamos de crear: {0}. Creado en: {1}",
+                archivoRecienCreado.FullName, archivoRecienCreado.CreationTime);
+
+
+            #endregion
+
+
 
 
             //Recupero todos los archivos txt cuyo nombre comienza con A (ó a)
@@ -147,62 +276,6 @@ namespace EnumerarArchivos
 
             return;
 
-            ////Sólo al llegar aquí se ejecuta el query  
-            //Console.WriteLine("Resultado Inicial");
-
-            //foreach (FileInfo archivo in buscarArchivosTXT)
-            //{
-            //    Console.WriteLine(archivo.FullName);
-            //}
-
-
-            ////Creemos un nuevo archivo para complicar las cosas
-            //CrearArchivo(misDocumentos);
-
-            ////Reconstruyamos el array para traer los archivos nuevos
-            //todosMisArchivos = dir.GetFiles("*.*", SearchOption.AllDirectories);
-
-            ////Ejecutemos el query nuevamente, sin tocar la definición
-            //Console.WriteLine("Resultado luego de crear un archivo nuevo");
-            //foreach (FileInfo archivo in buscarArchivosTXT)
-            //{
-            //    Console.WriteLine(archivo.FullName);
-            //}
-
-            ////Un modo alternativo de ejecutar el mismo query
-            //var buscarUnaVezMas = dir.GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Extension == ".txt").OrderBy(f => f.Name).Select(f => f);
-
-            ////Ejecutar el query  
-            //foreach (FileInfo archivo in buscarUnaVezMas)
-            //{
-            //    Console.WriteLine(archivo.FullName);
-            //}
-
-
-            //// Usando como base la búsqueda anterior, creamos y ejecutamos otra búsqueda 
-            //// que nos diga: cuántos son, y cuál es el más nuevo
-            //// Aquí no se ejecuta la búsqueda hasta que no se produce la llamada a Last()
-
-            //var archivoMasReciente =
-            //    (from archivo in buscarArchivosTXT
-            //     orderby archivo.CreationTime
-            //     select new { archivo.FullName, archivo.CreationTime })
-            //    .Last();
-
-            //Console.WriteLine("\r\nEl archivo más reciente de tipo .txt es {0}. Creado en: {1}",
-            //    archivoMasReciente.FullName, archivoMasReciente.CreationTime);
-
-            ////Creamos un nuevo archivo TXT para producir un resultado diferente en el query
-            //CrearArchivo(misDocumentos);
-
-            //var archivoRecienCreado =
-            //    (from archivo in buscarArchivosTXT
-            //     orderby archivo.CreationTime
-            //     select new { archivo.FullName, archivo.CreationTime })
-            //    .Last();
-
-            //Console.WriteLine("\r\nEste es el archivo que acabamos de crear: {0}. Creado en: {1}",
-            //    archivoRecienCreado.FullName, archivoRecienCreado.CreationTime);
 
 
 
