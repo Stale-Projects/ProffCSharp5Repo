@@ -33,11 +33,12 @@ namespace EnumerarArchivos
             //Separador
             EncabezadoYPieConsola separador = new EncabezadoYPieConsola();
 
-            FileInfo[] todosMisArchivos = RecuperarTodosMisArchivos();
+
 
             #region Ejemplo #01: Operador Where
-
             separador.EscribirEncabezado("Ejemplo #01: Uso de Operador Where");
+
+            FileInfo[] todosMisArchivos = RecuperarTodosMisArchivos();
             var archivosTXT = from archivo in todosMisArchivos
                               where archivo.Extension == ".txt"
                               select archivo;
@@ -47,8 +48,8 @@ namespace EnumerarArchivos
             {
                 Console.WriteLine(archivoTXT.Name);
             }
-            separador.EscribirPie("Fin Ejemplo #01");
 
+            separador.EscribirPie("Fin Ejemplo #01");
             #endregion
 
             #region Ejemplo #02: Operador Where con métodos de Extensión
@@ -93,10 +94,11 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #03");
             #endregion
 
-
             #region Ejemplo 04: Ejecución parcialmente diferida
+            separador.EscribirEncabezado("Ejemplo #04: Ejecución parcialmente diferida");
 
-            //Primero obtenemos la localización del directorio Mis Documentos 
+            //En lugar de separar la búsqueda de archivos en otra función lo incluimos en el query 
+            //aún a riesgo de una excepción, para que sea más evidente el problema que queremos mostrar 
             string misDocumentos = Path.GetDirectoryName(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
             //Tomamos una imagen instantánea del directorio My Documents
             var dir = new DirectoryInfo(misDocumentos);
@@ -104,9 +106,8 @@ namespace EnumerarArchivos
 
             //Creamos un query que lista todos los archivos txt  
             //El método GetFiles devuelve un array de objetos de tipo FileInfo
-            //el segundo argumento le indica a GetFiles que busque en todos los 
-            //subdirectorios de Mis Documentos
-            var buscarArchivosTXT =
+            //e incluimos su ejecución directamente en la definición del query
+            archivosTXT =
             from archivo in dir.GetFiles("*.*", SearchOption.AllDirectories)
             where archivo.Extension == ".txt"
             orderby archivo.Name
@@ -114,34 +115,51 @@ namespace EnumerarArchivos
 
             //Sólo al llegar aquí se ejecuta el query  
             Console.WriteLine("Resultado Inicial");
-
-            foreach (FileInfo archivo in buscarArchivosTXT)
-            {
-                Console.WriteLine(archivo.FullName);
-            }
+            Console.WriteLine("Encontramos {0} archivos", archivosTXT.ToArray<FileInfo>().Length.ToString());
 
 
             //Creemos un nuevo archivo para complicar las cosas
             CrearArchivo(misDocumentos);
 
-            //Reconstruyamos el array para traer los archivos nuevos
+
+            //Ejecutemos el query nuevamente, sin tocar la definición
+            Console.WriteLine("Resultado luego de crear un archivo nuevo");
+            Console.WriteLine("Encontramos {0} archivos", archivosTXT.ToArray<FileInfo>().Length.ToString());
+
+            separador.EscribirPie("Fin Ejemplo #04");
+            #endregion
+
+
+            #region Ejemplo 04b: Ejecución completamente diferida
+            separador.EscribirEncabezado("Ejemplo #04b: Ejecución completamente diferida");
+
+            todosMisArchivos = dir.GetFiles("*.*", SearchOption.AllDirectories);
+            archivosTXT =
+            from archivo in todosMisArchivos
+            where archivo.Extension == ".txt"
+            orderby archivo.Name
+            select archivo;
+
+            Console.WriteLine("Resultado Inicial");
+            Console.WriteLine("Encontramos {0} archivos", archivosTXT.ToArray<FileInfo>().Length.ToString());
+            //Creemos un nuevo archivo para complicar las cosas
+            CrearArchivo(misDocumentos);
+
+            //Refresquemos el array de archivos, para traer todo lo nuevo 
+            //Es necesario hacerlo desde la creación del DirectoryInfo
+            dir = new DirectoryInfo(misDocumentos);
             todosMisArchivos = dir.GetFiles("*.*", SearchOption.AllDirectories);
 
             //Ejecutemos el query nuevamente, sin tocar la definición
             Console.WriteLine("Resultado luego de crear un archivo nuevo");
-            foreach (FileInfo archivo in buscarArchivosTXT)
-            {
-                Console.WriteLine(archivo.FullName);
-            }
+            Console.WriteLine("Encontramos {0} archivos", archivosTXT.ToArray<FileInfo>().Length.ToString());
 
-            //Un modo alternativo de ejecutar el mismo query
-            var buscarUnaVezMas = dir.GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Extension == ".txt").OrderBy(f => f.Name).Select(f => f);
+            separador.EscribirPie("Fin Ejemplo #04b");
+            #endregion
 
-            //Ejecutar el query  
-            foreach (FileInfo archivo in buscarUnaVezMas)
-            {
-                Console.WriteLine(archivo.FullName);
-            }
+
+
+
 
 
             // Usando como base la búsqueda anterior, creamos y ejecutamos otra búsqueda 
@@ -149,7 +167,7 @@ namespace EnumerarArchivos
             // Aquí no se ejecuta la búsqueda hasta que no se produce la llamada a Last()
 
             var archivoMasReciente =
-                (from archivo in buscarArchivosTXT
+                (from archivo in archivosTXT
                  orderby archivo.CreationTime
                  select new { archivo.FullName, archivo.CreationTime })
                 .Last();
@@ -161,7 +179,7 @@ namespace EnumerarArchivos
             CrearArchivo(misDocumentos);
 
             var archivoRecienCreado =
-                (from archivo in buscarArchivosTXT
+                (from archivo in archivosTXT
                  orderby archivo.CreationTime
                  select new { archivo.FullName, archivo.CreationTime })
                 .Last();
@@ -169,8 +187,6 @@ namespace EnumerarArchivos
             Console.WriteLine("\r\nEste es el archivo que acabamos de crear: {0}. Creado en: {1}",
                 archivoRecienCreado.FullName, archivoRecienCreado.CreationTime);
 
-
-            #endregion
 
 
 
@@ -246,10 +262,10 @@ namespace EnumerarArchivos
 
             //Ahora listamos solo los directorios que tienen archivos TXT dentro
             IEnumerable<string> directoriosConTXT =
-                from dir in misDirectorios
-                from archivo in dir.Archivos
+                from directorio in misDirectorios
+                from archivo in directorio.Archivos
                 where archivo.Extension == ".txt"
-                select (dir.Nombre + " - " + archivo.Name);
+                select (directorio.Nombre + " - " + archivo.Name);
 
             Console.WriteLine("Nombres de Directorios que contienen TXTs");
             foreach (var descripcion in directoriosConTXT)
@@ -262,11 +278,11 @@ namespace EnumerarArchivos
             //el query anterior
             //Ahora listamos solo los directorios que tienen archivos TXT dentro
             IEnumerable<string> directoriosConTXTOrdenados =
-                from dir in misDirectorios
-                from archivo in dir.Archivos
+                from unDirectorio in misDirectorios
+                from archivo in unDirectorio.Archivos
                 where archivo.Extension == ".txt"
                 orderby archivo.CreationTime
-                select (dir.Nombre + " - " + archivo.Name + "Creado en: " + archivo.CreationTime.ToLongDateString());
+                select (unDirectorio.Nombre + " - " + archivo.Name + "Creado en: " + archivo.CreationTime.ToLongDateString());
 
             Console.WriteLine("Nombres de Directorios que contienen TXTs");
             foreach (var descripcion in directoriosConTXTOrdenados)
@@ -277,14 +293,6 @@ namespace EnumerarArchivos
             return;
 
 
-
-
-
-            //string ejemplo = "murciélago";
-            //int vocales = ejemplo.CuantasVocalesTienes();
-            ////int vocales = StringExtension.CuantasVocalesTienes(ejemplo);
-
-            //Console.WriteLine(@"'murciélago' tiene {0} vocales", vocales.ToString());
 
         }
 
