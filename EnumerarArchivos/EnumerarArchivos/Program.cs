@@ -128,8 +128,7 @@ namespace EnumerarArchivos
 
             separador.EscribirPie("Fin Ejemplo #04");
             #endregion
-
-
+            
             #region Ejemplo 04b: Ejecución completamente diferida
             separador.EscribirEncabezado("Ejemplo #04b: Ejecución completamente diferida");
 
@@ -141,9 +140,12 @@ namespace EnumerarArchivos
             select archivo;
 
             Console.WriteLine("Resultado Inicial");
-            Console.WriteLine("Encontramos {0} archivos", archivosTXT.ToArray<FileInfo>().Length.ToString());
+            Console.WriteLine("Encontramos {0} archivos", archivosTXT.ToArray<FileInfo>().Length.ToString());
+
             //Creemos un nuevo archivo para complicar las cosas
-            CrearArchivo(misDocumentos);
+            Console.WriteLine("Crea un nuevo archivo TXT y luego oprime ENTER...");
+            Console.ReadLine();
+            //CrearArchivo(misDocumentos);
 
             //Refresquemos el array de archivos, para traer todo lo nuevo 
             //Es necesario hacerlo desde la creación del DirectoryInfo
@@ -156,6 +158,7 @@ namespace EnumerarArchivos
 
             separador.EscribirPie("Fin Ejemplo #04b");
             #endregion
+
 
 
 
