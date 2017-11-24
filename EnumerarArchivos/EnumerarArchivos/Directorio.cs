@@ -1,4 +1,27 @@
-﻿// ==++==// //   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.// // ==--==/*============================================================** Proyecto: Capitulo10_ColeccionesObservables** Clase:  Directorio** ** <OWNER>MarceVolta</OWNER>**** Propósito: Proveer ejemplos de código para el capítulo 11 del libro** "De Cabeza a C#"** Este proyecto provee ejemplos de Búsquedas (Queries) * Esta clase se creó para mostrar ejemplos de queries* sobre una colección de objetos de tipo Directorio que * representan directorios reales en el sistema de archivos* del equipo donde se ejecuta el código* La clase es modelada en base a la clase DirectoryInfo del framework* Posee entre otras, una propiedad llamada Archivos que es una colección* de objetos de tipo FileInfo que representan cada uno a un * archivo contenido por este directorio** Descripciones debajo en el summary===========================================================*/
+﻿// ==++==
+// 
+//   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.
+// 
+// ==--==
+/*============================================================
+** Proyecto: Capitulo10_ColeccionesObservables
+** Clase:  Directorio
+** 
+** <OWNER>MarceVolta</OWNER>
+**
+** Propósito: Proveer ejemplos de código para el capítulo 11 del libro
+** "De Cabeza a C#"
+** Este proyecto provee ejemplos de Búsquedas (Queries) 
+* Esta clase se creó para mostrar ejemplos de queries
+* sobre una colección de objetos de tipo Directorio que 
+* representan directorios reales en el sistema de archivos
+* del equipo donde se ejecuta el código
+* La clase es modelada en base a la clase DirectoryInfo del framework
+* Posee entre otras, una propiedad llamada Archivos que es una colección
+* de objetos de tipo FileInfo que representan cada uno a un 
+* archivo contenido por este directorio
+** Descripciones debajo en el summary
+===========================================================*/
 
 using System.Collections.Generic;
 using System.IO;

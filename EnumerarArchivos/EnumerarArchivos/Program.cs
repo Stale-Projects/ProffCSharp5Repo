@@ -13,8 +13,8 @@
 ** Propósito: Proveer ejemplos de código para el capítulo 11 del libro
 ** "De Cabeza a C#"
 ** Este proyecto provee ejemplos de Queries LINQ sobre objetos
-* del tipo Directorio y otras colecciones creadas para ejemplos más
-* sencillos.
+** de tipo Directorio y otras colecciones creadas para ejemplos más
+** sencillos.
 ** Descripciones debajo
 ===========================================================*/
 using System;
@@ -33,8 +33,6 @@ namespace EnumerarArchivos
             //Separador
             EncabezadoYPieConsola separador = new EncabezadoYPieConsola();
 
-
-
             #region Ejemplo #01: Operador Where
             separador.EscribirEncabezado("Ejemplo #01: Uso de Operador Where");
 
@@ -52,6 +50,21 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #01");
             #endregion
 
+            #region Ejemplo #01-b: Operador Where con dos condiciones
+            separador.EscribirEncabezado("Ejemplo #01-b: Operador Where con dos condiciones");
+            var archivosTXTGrandes = from archivo in todosMisArchivos
+                                     where (archivo.Extension == ".txt"
+                                     && archivo.Length > 1000)
+                                     select archivo;
+            foreach (var archivoTXTGrande in archivosTXTGrandes)
+            {
+                Console.WriteLine("{0}: {1} bytes", archivoTXTGrande.Name, archivoTXTGrande.Length.ToString());
+            }
+
+
+            separador.EscribirPie("Fin Ejemplo 01-b");
+            #endregion
+
             #region Ejemplo #02: Operador Where con métodos de Extensión
             separador.EscribirEncabezado("Ejemplo #02: Operador Where con métodos de Extensión");
             var buscarUnaVezMas = todosMisArchivos.Where(f => f.Extension == ".txt").OrderBy(f => f.Name).Select(f => f);
@@ -62,6 +75,17 @@ namespace EnumerarArchivos
                 Console.WriteLine(archivo.FullName);
             }
             separador.EscribirPie("Fin Ejemplo #02");
+            #endregion
+
+            #region Ejemplo #02-b: Operador Where con métodos de extensión y más de una condición
+            separador.EscribirEncabezado("Ejemplo #02-b: Operador Where con métodos de Extensión y más de una condición");
+            var queryConDosCondiciones = todosMisArchivos.Where(f => (f.Extension == ".txt" && f.Name.Substring(0, 1).ToLower() == "a")).Select(f => f);
+            foreach (FileInfo archivo in queryConDosCondiciones)
+            {
+                Console.WriteLine(archivo.Name);
+            }
+
+            separador.EscribirPie("Fin Ejemplo #02-b");
             #endregion
 
             #region Ejemplo #03: Ejecución diferida
@@ -128,7 +152,7 @@ namespace EnumerarArchivos
 
             separador.EscribirPie("Fin Ejemplo #04");
             #endregion
-            
+
             #region Ejemplo 04b: Ejecución completamente diferida
             separador.EscribirEncabezado("Ejemplo #04b: Ejecución completamente diferida");
 
@@ -159,15 +183,42 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #04b");
             #endregion
 
+            #region Ejemplo #05: Operador From compuesto 
+            separador.EscribirEncabezado("Operador From compuesto");
+
+            //Primero creamos una lista de todos los subdirectorios de Mis Documentos
+            List<DirectoryInfo> misDirectoryInfo = RecuperarTodosMisDirectorios().ToList<DirectoryInfo>();
+            //Luego creamos una lista para contener los objetos Directorio correspondientes
+            List<Directorio> misDirectorios = new List<Directorio>();
+            foreach (var directorio in misDirectoryInfo)
+            {
+                misDirectorios.Add(new Directorio(directorio));
+            }
+
+            foreach (var directorio in misDirectorios)
+            {
+                Console.WriteLine("Nombre: {0}", directorio.Nombre);
+            }
+
+            //Ahora listamos solo los directorios que tienen archivos TXT dentro
+            IEnumerable<string> directoriosConTXT =
+                from directorio in misDirectorios
+                from archivo in directorio.Archivos
+                where archivo.Extension == ".txt"
+                select directorio.Nombre;
+
+            Console.WriteLine("Nombres de Directorios que contienen TXTs");
+            foreach (var descripcion in directoriosConTXT)
+            {
+                Console.WriteLine(descripcion);
+            }
 
 
+            separador.EscribirPie("Fin ejemplo #05");
+            #endregion
 
-
-
-
-            // Usando como base la búsqueda anterior, creamos y ejecutamos otra búsqueda 
-            // que nos diga: cuántos son, y cuál es el más nuevo
-            // Aquí no se ejecuta la búsqueda hasta que no se produce la llamada a Last()
+            #region Ejemplo #06: Ordenar resultados de Query
+            separador.EscribirEncabezado("Ejemplo #06: Ordenar resultados de Query");
 
             var archivoMasReciente =
                 (from archivo in archivosTXT
@@ -177,6 +228,23 @@ namespace EnumerarArchivos
 
             Console.WriteLine("\r\nEl archivo más reciente de tipo .txt es {0}. Creado en: {1}",
                 archivoMasReciente.FullName, archivoMasReciente.CreationTime);
+
+            separador.EscribirPie("Fin ejemplo #06");
+            #endregion
+
+            #region Ejemplo #06.b Ordenar con métodos de extensión
+            separador.EscribirEncabezado("Ejemplo #06.b Ordenar con métodos de extensión");
+
+            var archivoMasAntiguo = (archivosTXT.OrderBy(a => a.CreationTime).Select(a => new { a.FullName, a.CreationTime })).First();
+
+            Console.WriteLine("\r\nEl archivo más antiguo de tipo .txt es {0}. Creado en: {1}",
+                archivoMasReciente.FullName, archivoMasAntiguo.CreationTime);
+
+            separador.EscribirPie("Fin ejemplo #06.b");
+            #endregion
+
+            return;
+
 
             //Creamos un nuevo archivo TXT para producir un resultado diferente en el query
             CrearArchivo(misDocumentos);
@@ -249,51 +317,9 @@ namespace EnumerarArchivos
             }
 
 
-            //Operador From compuesto
-            //Primero creamos una lista de todos los subdirectorios de Mis Documentos
-            List<DirectoryInfo> misDirectoryInfo = RecuperarTodosMisDirectorios().ToList<DirectoryInfo>();
-            List<Directorio> misDirectorios = new List<Directorio>();
-            foreach (var directorio in misDirectoryInfo)
-            {
-                misDirectorios.Add(new Directorio(directorio));
-            }
-
-            foreach (var directorio in misDirectorios)
-            {
-                Console.WriteLine("Nombre: {0}", directorio.Nombre);
-            }
-
-            //Ahora listamos solo los directorios que tienen archivos TXT dentro
-            IEnumerable<string> directoriosConTXT =
-                from directorio in misDirectorios
-                from archivo in directorio.Archivos
-                where archivo.Extension == ".txt"
-                select (directorio.Nombre + " - " + archivo.Name);
-
-            Console.WriteLine("Nombres de Directorios que contienen TXTs");
-            foreach (var descripcion in directoriosConTXT)
-            {
-                Console.WriteLine(descripcion);
-            }
 
 
-            //Para ejemplificar el uso de OrderBy modificamos ligeramente 
-            //el query anterior
-            //Ahora listamos solo los directorios que tienen archivos TXT dentro
-            IEnumerable<string> directoriosConTXTOrdenados =
-                from unDirectorio in misDirectorios
-                from archivo in unDirectorio.Archivos
-                where archivo.Extension == ".txt"
-                orderby archivo.CreationTime
-                select (unDirectorio.Nombre + " - " + archivo.Name + "Creado en: " + archivo.CreationTime.ToLongDateString());
 
-            Console.WriteLine("Nombres de Directorios que contienen TXTs");
-            foreach (var descripcion in directoriosConTXTOrdenados)
-            {
-                Console.WriteLine(descripcion);
-            }
-
-            return;
 
 
 
