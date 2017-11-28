@@ -88,6 +88,22 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #02-b");
             #endregion
 
+            #region Ejemplo #02-c: Operador Where con índice
+            separador.EscribirEncabezado("Ejemplo #02-c: Operador Where con índice");
+
+            //Un query donde utilizamos un índice
+            var archivosTXT_IndicePar = todosMisArchivos.Where((x, indice) => x.Extension == ".txt" && indice % 2 == 0).Select(r => r);
+            Console.WriteLine("Todos los archivos TXT cuyo índice sea par");
+            var cuentaDeArchivosTXT_IndicePar = archivosTXT_IndicePar.Count();
+            Console.WriteLine("Son {0} archivos", cuentaDeArchivosTXT_IndicePar.ToString());
+            foreach (var archivoTXT in archivosTXT_IndicePar)
+            {
+                Console.WriteLine(archivoTXT.Name);
+            }
+
+            separador.EscribirPie("Fin Ejemplo #02-c");
+            #endregion
+
             #region Ejemplo #03: Ejecución diferida
             separador.EscribirEncabezado("Ejemplo #03: Ejecución diferida");
 
@@ -232,7 +248,7 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin ejemplo #06");
             #endregion
 
-            #region Ejemplo #06.b Ordenar con métodos de extensión
+            #region Ejemplo #06-b Ordenar con métodos de extensión
             separador.EscribirEncabezado("Ejemplo #06.b Ordenar con métodos de extensión");
 
             var archivoMasAntiguo = (archivosTXT.OrderBy(a => a.CreationTime).Select(a => new { a.FullName, a.CreationTime })).First();
@@ -243,58 +259,62 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin ejemplo #06.b");
             #endregion
 
-            return;
+            #region Ejemplo #06-c: Más de un criterio de orden
+            separador.EscribirEncabezado("Ejemplo #06-c: Más de un criterio de orden");
 
-
-            //Creamos un nuevo archivo TXT para producir un resultado diferente en el query
-            CrearArchivo(misDocumentos);
-
-            var archivoRecienCreado =
+            var archivosOrdenados =
                 (from archivo in archivosTXT
-                 orderby archivo.CreationTime
-                 select new { archivo.FullName, archivo.CreationTime })
-                .Last();
+                 orderby archivo.CreationTime.ToShortDateString(), archivo.Name
+                 select archivo.Name + " - " + archivo.CreationTime.ToShortDateString());
 
-            Console.WriteLine("\r\nEste es el archivo que acabamos de crear: {0}. Creado en: {1}",
-                archivoRecienCreado.FullName, archivoRecienCreado.CreationTime);
-
-
-
-
-
-            //Recupero todos los archivos txt cuyo nombre comienza con A (ó a)
-            var archivosTXTConA = from archivo in todosMisArchivos
-                                  where archivo.Extension == ".txt" &&
-                                  archivo.Name.Substring(0, 1).ToLower() == "a"
-                                  select archivo;
-
-            Console.WriteLine("Archivos TXT que comienzan con A ó a");
-            foreach (var archivoTXTConA in archivosTXTConA)
+            Console.WriteLine("Archivos ordenados por fecha y nombre");
+            foreach (var archivo in archivosOrdenados)
             {
-                Console.WriteLine(archivoTXTConA.Name);
+                Console.WriteLine(archivo);
             }
 
-            //El primer query anterior escrito con sintaxis de métodos de extensión
-            var archivosTXT_V2 = todosMisArchivos.Where(x => x.Extension == ".txt").Select(r => r);
-            var cuentaDeArchivosTXT = todosMisArchivos.Where(x => x.Extension == ".txt").Count();
-            Console.WriteLine("Todos los archivos TXT en Sintaxis de métodos de extensión");
-            Console.WriteLine("Son {0} archivos", cuentaDeArchivosTXT.ToString());
+            separador.EscribirPie("Fin ejemplo 06-c");
+            #endregion
 
-            foreach (var archivoTXT in archivosTXT_V2)
+            #region Ejemplo #06-d: Más de un criterio de orden con métodos de extensión
+            separador.EscribirEncabezado("Ejemplo #06-d: Más de un criterio de orden con métodos de extensión");
+
+            var archivosOrdenadosV2 = archivosTXT.OrderBy(f => f.CreationTime.ToShortDateString()).ThenBy(f => f.Name).Select(f => f.Name + " - " + f.CreationTime.ToShortDateString());
+
+            Console.WriteLine("Archivos ordenados por fecha y nombre, usando métodos de extensión");
+            foreach (var archivo in archivosOrdenadosV2)
             {
-                Console.WriteLine(archivoTXT.Name);
+                Console.WriteLine(archivo);
             }
 
 
-            //Un query donde utilizamos un índice
-            var archivosTXT_IndicePar = todosMisArchivos.Where((x, indice) => x.Extension == ".txt" && indice % 2 == 0).Select(r => r);
-            Console.WriteLine("Todos los archivos TXT cuyo índice sea par");
-            var cuentaDeArchivosTXT_IndicePar = todosMisArchivos.Where((x, indice) => x.Extension == ".txt" && indice % 2 == 0).Count();
-            Console.WriteLine("Son {0} archivos", cuentaDeArchivosTXT_IndicePar.ToString());
-            foreach (var archivoTXT in archivosTXT_IndicePar)
+            separador.EscribirPie("Fin Ejemplo #06-d");
+            #endregion
+
+            #region Ejemplo #07: Agrupamiento con group by
+            separador.EscribirEncabezado("Ejemplo #07: Agrupamiento con group by");
+
+            var agrupadosPorNombre =
+                (from archivo in archivosTXT
+                 group archivo by archivo.Name.Substring(0, 1).ToLower() into grupos
+                 orderby grupos.Count(), grupos.Key
+                 where grupos.Count() > 0
+                 select new { Inicial = grupos.Key, Cuenta = grupos.Count() });
+
+            Console.WriteLine("Cuantos archivos hay en cada grupo por inicial de nombre");
+            Console.WriteLine("Contamos sólo aquellos grupos que tengan al menos un archivo");
+            foreach (var grupo in agrupadosPorNombre)
             {
-                Console.WriteLine(archivoTXT.Name);
+                Console.WriteLine("Inicial: {0}, Cuenta: {1}", grupo.Inicial, grupo.Cuenta.ToString());
             }
+
+
+            separador.EscribirPie("Fin ejemplo #07");
+            #endregion
+
+
+
+            return;
 
             //Filtrado por tipo
             //Este ejemplo se hizo demasiado complejo para algo simple
@@ -375,7 +395,10 @@ namespace EnumerarArchivos
         }
 
 
-
+        /// <summary>
+        /// Esta función recupera todos los directorios contenidos dentro del directorio Mis Documentos
+        /// </summary>
+        /// <returns>IEnumerable&lt;DirectoryInfo&gt; Una colección con todos los directorios</returns>
         private static IEnumerable<DirectoryInfo> RecuperarTodosMisDirectorios()
         {
             //Primero obtenemos la localización del directorio Mis Documentos 
@@ -387,7 +410,6 @@ namespace EnumerarArchivos
 
             //Ahora, obtengo recursivamente todos los subdirectorios 
             IEnumerable<DirectoryInfo> todosMisSubdirectorios = dir.GetDirectories("*.*", SearchOption.AllDirectories);
-            //IEnumerable<DirectoryInfo> todosMisSubdirectorios = RecuperarTodosLosSubdirectorios(dir);
             return todosMisSubdirectorios;
 
             //IEnumerable todosMisDirectoriosYArchivos = null;
@@ -424,11 +446,10 @@ namespace EnumerarArchivos
 
         /// <summary>
         /// Esta función la escribí para obtener los sub-directorios en forma recursiva porque 
-        /// no sabía que habia una sobrecarga de GetDirectories() que me permitía obtener todos los
-        /// ubdirectorios en forma recursiva
+        /// no sabía que habia una sobrecarga de GetDirectories() que tiene esa funcionalidad
         /// </summary>
-        /// <param name="directorio"></param>
-        /// <returns></returns>
+        /// <param name="directorio">string. El directorio del cual quiero recuperar todos los subdirectorios</param>
+        /// <returns>IEnumerable&lt;DirectoryInfo&gt; Una colección con todos los subdirectorios del directorio pasado como parámetro</returns>
         private static IEnumerable<DirectoryInfo> RecuperarTodosLosSubdirectorios(DirectoryInfo directorio)
         {
             IEnumerable<DirectoryInfo> _subdirectorios = directorio.GetDirectories();
@@ -440,6 +461,11 @@ namespace EnumerarArchivos
             return _subdirectorios;
         }
 
+        /// <summary>
+        /// Esta función permite crear un archivo de texto
+        /// con un contenido fijo, sirve como auxiliar en los ejemplos
+        /// </summary>
+        /// <param name="path">string, el directorio donde se creará el archivo</param>
         private static void CrearArchivo(string path)
         {
             string nombreDeArchivo = path + @"\txt_" + DateTime.Now.ToString(format: "yyyymmdd hhmmss") + ".txt";
