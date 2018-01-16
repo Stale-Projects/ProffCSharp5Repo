@@ -297,8 +297,7 @@ namespace EnumerarArchivos
             var agrupadosPorNombre =
                 (from archivo in archivosTXT
                  group archivo by archivo.Name.Substring(0, 1).ToLower() into grupos
-                 orderby grupos.Count(), grupos.Key
-                 where grupos.Count() > 0
+                 orderby grupos.Count() descending, grupos.Key
                  select new { Inicial = grupos.Key, Cuenta = grupos.Count() });
 
             Console.WriteLine("Cuantos archivos hay en cada grupo por inicial de nombre");
@@ -311,6 +310,97 @@ namespace EnumerarArchivos
 
             separador.EscribirPie("Fin ejemplo #07");
             #endregion
+
+            #region Ejemplo #08: Agrupamiento con métodos de extensión
+            separador.EscribirEncabezado("Ejemplo #08: Agrupamiento con métodos de extensión");
+
+            var agrupadosPorNombre_v2 = archivosTXT.GroupBy(a => a.Name.Substring(0, 1).ToLower()).OrderByDescending(g => g.Count()).ThenBy(g => g.Key).Where(g => g.Count() > 0).Select(g => new { cuantos = g.Count(), inicial = g.Key });
+            foreach (var grupo in agrupadosPorNombre_v2)
+            {
+                Console.WriteLine("Inicial: {0}, Cuenta: {1}", grupo.inicial, grupo.cuantos.ToString());
+            }
+
+            separador.EscribirPie("Fin Ejemplo #08");
+
+            #endregion
+
+            #region Ejemplo #09: Agrupamiento con objetos anidados
+            separador.EscribirEncabezado("Ejemplo #09: Agrupamiento con objetos anidados");
+
+            var agrupadosYAnidados =
+                (from archivo in archivosTXT
+                 group archivo by archivo.Name.Substring(0, 1).ToLower() into grupos
+                 orderby grupos.Count() descending, grupos.Key
+                 select new
+                 {
+                     Inicial = grupos.Key,
+                     Cuenta = grupos.Count(),
+                     Nombres = (from nombresDeArchivo in grupos
+                                orderby nombresDeArchivo.Name
+                                select nombresDeArchivo.Name)
+                 });
+
+            Console.WriteLine("Cuantos archivos hay en cada grupo por inicial de nombre");
+            Console.WriteLine("Contamos sólo aquellos grupos que tengan al menos un archivo");
+            foreach (var grupo in agrupadosYAnidados)
+            {
+                Console.WriteLine("Inicial: {0}, Cuenta: {1}", grupo.Inicial, grupo.Cuenta.ToString());
+                Console.WriteLine("Nombres: ");
+                foreach (var nombre in grupo.Nombres)
+                {
+                    Console.WriteLine(nombre);
+                }
+            }
+
+
+            separador.EscribirPie("Fin ejemplo #09");
+            #endregion
+
+            #region Ejemplo #10: Uso de Join - Queries separados
+            separador.EscribirEncabezado("Ejemplo #10: Uso de Join - Queries separados");
+
+            var archivosDOCX = from cualquierArchivo in todosMisArchivos
+                               where cualquierArchivo.Extension == ".docx"
+                               select new { Nombre = NombreSinExtension(cualquierArchivo.Name), fecha = cualquierArchivo.CreationTime.ToShortDateString() };
+
+            var archivosPDF = from cualquierArchivo in todosMisArchivos
+                              where cualquierArchivo.Extension == ".pdf"
+                              select new { Nombre = NombreSinExtension(cualquierArchivo.Name), fecha = cualquierArchivo.CreationTime.ToShortDateString() };
+
+            var archivosHomonimos = from docx in archivosDOCX
+                                    join pdf in archivosPDF on docx.Nombre equals pdf.Nombre
+                                    select new { Nombre = docx.Nombre, FechaDOCX = docx.fecha, FechaPDF = pdf.fecha };
+
+            foreach (var homonimo in archivosHomonimos)
+            {
+                Console.WriteLine("Nombre: '{0}' - Fecha DOCX: {1} - Fecha PDF: {2}", homonimo.Nombre, homonimo.FechaDOCX, homonimo.FechaPDF);
+            }
+
+            separador.EscribirPie("Fin ejemplo #10");
+            #endregion
+
+            #region Ejemplo #11 - Todo en el mismo query
+            separador.EscribirEncabezado("Ejemplo #11 - Todo en el mismo query");
+
+            var ArchivosCompartidos = from unArchivoDocx in
+                                      (from unArchivoDOCX in todosMisArchivos
+                                       where unArchivoDOCX.Extension == ".docx"
+                                       select new { Nombre = NombreSinExtension(unArchivoDOCX.Name), fecha = unArchivoDOCX.CreationTime.ToShortDateString() })
+                                      join unArchivoPdf in
+                                      (from unArchivoPDF in todosMisArchivos
+                                       where unArchivoPDF.Extension == ".pdf"
+                                       select new { Nombre = NombreSinExtension(unArchivoPDF.Name), fecha = unArchivoPDF.CreationTime.ToShortDateString() })
+                                      on unArchivoDocx.Nombre equals unArchivoPdf.Nombre
+                                      select new { Nombre = unArchivoDocx.Nombre, FechaDOCX = unArchivoDocx.fecha, FechaPDF = unArchivoPdf.fecha };
+
+            foreach (var archivo in ArchivosCompartidos)
+            {
+                Console.WriteLine("Nombre: '{0}' - Fecha DOCX: {1} - Fecha PDF: {2}", archivo.Nombre, archivo.FechaDOCX, archivo.FechaPDF);
+            }
+
+            separador.EscribirPie("Fin Ejemplo #11");
+            #endregion
+
 
 
 
@@ -474,6 +564,22 @@ namespace EnumerarArchivos
             bw.Write(contenido);
             bw.Dispose();
 
+        }
+
+        /// <summary>
+        /// Esta función extrae el nombre de uun archivo quitándole la extensión. 
+        /// Si el nombre no tiene extensión, retorna el mismo nombre sin modificar
+        /// </summary>
+        /// <param name="nombreDeArchivo">El nombre del archivo incluyendo la extensión</param>
+        /// <returns></returns>
+        private static string NombreSinExtension(string nombreDeArchivo)
+        {
+            int posicion = nombreDeArchivo.IndexOf(".");
+            if (posicion >= 0)
+            {
+                nombreDeArchivo = nombreDeArchivo.Substring(0, posicion);
+            }
+            return nombreDeArchivo;
         }
 
 
