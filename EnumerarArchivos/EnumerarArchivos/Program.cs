@@ -401,8 +401,121 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #11");
             #endregion
 
+            #region Ejemplo #12 - Left Outer Join
+            separador.EscribirEncabezado("Ejemplo #12 - Left Outer Join");
+
+            Console.WriteLine("Todos los DOCX, y los PDF homónimos");
+            Console.WriteLine();
+            var todosLosDocxYSusPdf = from docx in archivosDOCX
+                                      join pdf in archivosPDF on docx.Nombre equals pdf.Nombre into docx_pdf
+                                      from pdf in docx_pdf.DefaultIfEmpty()
+                                      select new { Nombre = docx.Nombre, FechaDOCX = docx.fecha, FechaPDF = (pdf == null ? "No hay PDF homónimo" : pdf.fecha) };
+
+            foreach (var cadaArchivoDOCX in todosLosDocxYSusPdf)
+            {
+                Console.WriteLine("Nombre: '{0}' - Fecha DOCX: {1} - Fecha PDF: {2}", cadaArchivoDOCX.Nombre, cadaArchivoDOCX.FechaDOCX, cadaArchivoDOCX.FechaPDF);
+            }
 
 
+
+            Console.WriteLine();
+            Console.WriteLine("Todos los PDFs y los DOCX homónimos");
+            Console.WriteLine();
+
+            var todosLosPdfYSusDocx = from pdf in archivosPDF
+                                      join docx in archivosDOCX on pdf.Nombre equals docx.Nombre into docx_pdf
+                                      from docx in docx_pdf.DefaultIfEmpty()
+                                      select new { Nombre = pdf.Nombre, FechaPDF = pdf.fecha, FechaDOCX = (docx == null ? "No hay DOCX homónimo" : docx.fecha) };
+
+            foreach (var cadaArchivoPDF in todosLosPdfYSusDocx)
+            {
+                Console.WriteLine("Nombre: '{0}' - Fecha PDF: {1} - Fecha DOCX: {2}", cadaArchivoPDF.Nombre, cadaArchivoPDF.FechaPDF, cadaArchivoPDF.FechaDOCX);
+            }
+
+
+            separador.EscribirPie("Fin Ejemplo #12");
+            #endregion
+
+            #region Ejemplo #13 - Group Join
+            separador.EscribirEncabezado("Ejemplo #13 - Group Join");
+
+            //Inferencia de Tipos para crear una lista de objetos sin clase
+            //creados de forma anónima
+            var valoresPadre = new[] { new { Id = 1, ValorPadre = "A" },
+            new { Id = 2, ValorPadre = "B" },
+            new { Id = 3, ValorPadre = "C" } }.ToList();
+
+            var valoresHijo = new[] {new {Id = 1, ValorHijo="a1"},
+            new {Id = 1, ValorHijo="a2"}, new {Id = 1, ValorHijo="a3"},
+            new {Id = 2, ValorHijo="b1"}, new {Id = 2, ValorHijo="b2"}}.ToList();
+
+
+            Console.WriteLine();
+            Console.WriteLine("Inner Join");
+            Console.WriteLine();
+
+
+            //Inner Join
+            var tablaPlana = from p in valoresPadre
+                             join h in valoresHijo on p.Id equals h.Id
+                             select new { Id = p.Id, ValorPadre = p.ValorPadre, ValorHijo = h.ValorHijo };
+
+            foreach (var fila in tablaPlana)
+            {
+                Console.WriteLine("Id:{0} - ValorPadre:{1} - ValorHijo:{2}",
+                  fila.Id, fila.ValorPadre, fila.ValorHijo);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Left Outer Join");
+            Console.WriteLine();
+
+            //Left Outer Join
+            var tablaPlanaOJ = from p in valoresPadre
+                               join h in valoresHijo on p.Id equals h.Id into g
+                               from ph in g.DefaultIfEmpty()
+                               select new { Id = p.Id, ValorPadre = p.ValorPadre, ValorHijo = (ph == null ? "Nulo" : ph.ValorHijo) };
+
+            foreach (var fila in tablaPlanaOJ)
+            {
+                Console.WriteLine("Id:{0} - ValorPadre:{1} - ValorHijo:{2}",
+                  fila.Id, fila.ValorPadre, fila.ValorHijo);
+            }
+
+
+            Console.WriteLine();
+            Console.WriteLine("Group Join");
+            Console.WriteLine();
+
+
+            //Group Join
+            var tablaGJ = from p in valoresPadre
+                          join h in valoresHijo on p.Id equals h.Id into g
+                          select new { Id = p.Id, ValorPadre = p.ValorPadre, ValorHijo = g };
+
+            string grupoValoresHijo;
+            foreach (var fila in tablaGJ)
+            {
+                if (fila.ValorHijo.Count() == 0)
+                {
+                    grupoValoresHijo = "Nulo";
+                }
+                else
+                {
+                    grupoValoresHijo = "[";
+                    foreach (var hijo in fila.ValorHijo)
+                    {
+                        grupoValoresHijo += hijo.ValorHijo + ", ";
+                    }
+                    grupoValoresHijo = grupoValoresHijo.Substring(0, grupoValoresHijo.Length - 2);
+                    grupoValoresHijo += "]";
+                }
+                Console.WriteLine("Id:{0} - Valor Padre:{1} - Valores Hijo:{2}",
+                  fila.Id, fila.ValorPadre, grupoValoresHijo);
+            }
+
+            separador.EscribirPie("Fin Ejemplo #13");
+            #endregion
 
             return;
 
