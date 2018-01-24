@@ -520,7 +520,7 @@ namespace EnumerarArchivos
             #region Ejemplo #14 - Operadores de Conjuntos
             separador.EscribirEncabezado("Ejemplo #14 - Operadores de Conjuntos");
 
-            int[] multiplosDeDos = new int[] { 0, 2, 4, 6,8,10,12,14,16,18 };
+            int[] multiplosDeDos = new int[] { 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 };
             int[] multiplosDeTres = new int[] { 0, 3, 6, 9, 12, 15, 18, 21, 24, 27 };
 
             var multiplosDeDosYTres = multiplosDeDos.Intersect(multiplosDeTres);
@@ -529,34 +529,39 @@ namespace EnumerarArchivos
             {
                 Console.WriteLine(entero.ToString());
             }
+            Console.WriteLine();
 
-            separador.EscribirPie("Fin Ejemplo #14");
 
             var multiplosDeDosYMultiplosDeTres = multiplosDeDos.Union(multiplosDeTres);
-            Console.WriteLine("Union - Múltiplos de 2 y 3");
+            Console.WriteLine("Union - Múltiplos de 2 y Múltiplos de 3");
             foreach (var entero in multiplosDeDosYMultiplosDeTres)
             {
                 Console.WriteLine(entero.ToString());
             }
+            Console.WriteLine();
 
             var multiplosDeDosPeroNoDeTres = multiplosDeDos.Except(multiplosDeTres);
-            Console.WriteLine("Except - Multiplos de 2 que no son mùltiplos de 3");
+            Console.WriteLine("Except - Múltiplos de 2 que no son múltiplos de 3");
 
             foreach (var entero in multiplosDeDosPeroNoDeTres)
             {
                 Console.WriteLine(entero.ToString());
             }
+            Console.WriteLine();
 
             var multiplosDeTresPeroNoDeDos = multiplosDeTres.Except(multiplosDeDos);
-            Console.WriteLine("Except - Multiplos de 3 que no son mùltiplos de 2");
+            Console.WriteLine("Except - Múltiplos de 3 que no son múltiplos de 2");
 
             foreach (var entero in multiplosDeTresPeroNoDeDos)
             {
                 Console.WriteLine(entero.ToString());
             }
+            Console.WriteLine();
 
-
+            separador.EscribirPie("Fin Ejemplo #14");
             #endregion
+
+
 
             return;
 
