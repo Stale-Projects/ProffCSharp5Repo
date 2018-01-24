@@ -561,7 +561,22 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #14");
             #endregion
 
+            #region Ejemplo #15 - ZIP
+            separador.EscribirEncabezado("Ejemplo #15 - ZIP");
 
+            string[] poligonos = new string[] { "triángulo", "rectángulo", "pentágono", "hexágono", "heptágono", "octágono", "eneágono" };
+            int[] lados = new int[] { 3, 4, 5, 6, 7, 8, 9, 10 };
+
+            var descripcionesDePoligonos = poligonos.Zip(lados,
+                (p, l) => p + ": " + l.ToString() + " lados");
+
+            foreach (var descripcion in descripcionesDePoligonos)
+            {
+                Console.WriteLine(descripcion);
+            }
+
+            separador.EscribirPie("Fin Ejemplo #15");
+            #endregion
 
             return;
 
