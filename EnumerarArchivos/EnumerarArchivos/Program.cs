@@ -578,7 +578,7 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #15");
             #endregion
 
-            #region Ejemplo #16 - Solución comleta de Paginado!
+            #region Ejemplo #16 - Solución completa de Paginado!
             separador.EscribirEncabezado("Ejemplo #16 - Paginado");
 
 
@@ -590,6 +590,7 @@ namespace EnumerarArchivos
             Console.WriteLine("Ejemplo de Paginado");
             Console.WriteLine("Oprime una tecla para comenzar");
             Console.ReadKey();
+            var misTXTEnCache = misTXT.ToList();
 
             int largoDePagina = 5;
             int numeroDeItems = misTXT.Count();
