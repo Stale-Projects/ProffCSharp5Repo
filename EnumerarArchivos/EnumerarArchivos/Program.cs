@@ -578,6 +578,70 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #15");
             #endregion
 
+            #region Ejemplo #16 - Solución comleta de Paginado!
+            separador.EscribirEncabezado("Ejemplo #16 - Paginado");
+
+
+            FileInfo[] misArchivos = RecuperarTodosMisArchivos();
+            var misTXT = from archivo in todosMisArchivos
+                         where archivo.Extension == ".txt"
+                         select archivo;
+
+            Console.WriteLine("Ejemplo de Paginado");
+            Console.WriteLine("Oprime una tecla para comenzar");
+            Console.ReadKey();
+
+            int largoDePagina = 5;
+            int numeroDeItems = misTXT.Count();
+            int paginaActual = 1;
+            int numeroDePaginas = (int)Math.Ceiling(numeroDeItems / (double)largoDePagina);
+            MostrarPagina(misTXT, largoDePagina, paginaActual);
+            bool salir = false;
+            while (salir == false)
+            {
+                ConsoleKeyInfo teclaIngresada = Console.ReadKey();
+                switch (teclaIngresada.Key)
+                {
+                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.PageDown:
+                        if (paginaActual < numeroDePaginas)
+                        {
+                            paginaActual++;
+
+                        }
+                        else
+                        {
+                            Console.Beep();
+                        }
+                        break;
+
+                    case ConsoleKey.UpArrow:
+                    case ConsoleKey.PageUp:
+                        if (paginaActual > 1)
+                        {
+                            paginaActual--;
+
+                        }
+                        else
+                        {
+                            Console.Beep();
+                        }
+                        break;
+
+                    case ConsoleKey.Escape:
+                        salir = true;
+                        break;
+                    default:
+                        Console.Beep();
+                        break;
+                }
+                MostrarPagina(misTXT, largoDePagina, paginaActual);
+            }
+
+            separador.EscribirPie("Fin Ejemplo #16");
+            #endregion
+
+
             return;
 
             //Filtrado por tipo
@@ -756,6 +820,27 @@ namespace EnumerarArchivos
             return nombreDeArchivo;
         }
 
+        /// <summary>
+        /// Esta función muestra como paginar usando Skip y Take
+        /// a partir de una colección de objetos FileInfo. Se utiliza en el Ejemplo #16
+        /// </summary>
+        /// <param name="archivos">Una colección de objetos FileInfo obtenida de una query LINQ</param>
+        /// <param name="largoDePagina">Cuántos archivos muestro en cada página</param>
+        /// <param name="paginaActual">Cuál es la página que vamos a mostrar en este momento</param>
+        private static void MostrarPagina(IEnumerable<FileInfo> archivos, int largoDePagina, int paginaActual)
+        {
+            int numeroDePaginas = (int)Math.Ceiling(archivos.Count() / (double)largoDePagina);
+            Console.Clear();
+
+            var pagina = archivos.Skip(largoDePagina * (paginaActual - 1)).Take(largoDePagina);
+            Console.WriteLine("Página {0} de {1}", paginaActual.ToString(), numeroDePaginas.ToString());
+            Console.WriteLine("-----------------------------------------");
+            foreach (var archivo in pagina)
+            {
+                Console.WriteLine(archivo.Name);
+            }
+        }
+
 
 
     }
@@ -792,6 +877,7 @@ namespace EnumerarArchivos
             new string(Caracter, (int)(numeroDeAsteriscos / 2));
             return preparada;
         }
+
     }
 
 
