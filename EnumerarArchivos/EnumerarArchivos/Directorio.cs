@@ -34,7 +34,9 @@ namespace EnumerarArchivos
 
         private IEnumerable<FileInfo> archivos;
 
-
+        /// <summary>
+        /// Corresponde a la propiedad Name de DirectoryInfo
+        /// </summary>
         public string Nombre
         {
             get
@@ -42,7 +44,9 @@ namespace EnumerarArchivos
                 return EsteDirectorio.Name;
             }
         }
-
+        /// <summary>
+        /// Corresponde a la propiedad FullName de DirectoryInfo
+        /// </summary>
         public string Ubicacion
         {
             get

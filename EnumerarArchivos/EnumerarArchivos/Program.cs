@@ -642,6 +642,29 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #16");
             #endregion
 
+            #region Ejemplo #17 - Operadores de Agregado dentro de un query
+            separador.EscribirEncabezado("Ejemplo #17 - Operadores de Agregado dentro de un query");
+            //La variable misDirectorios ya fue definida en el Ejempo #5 como una List<Directorios>
+            //Una de las propiedades de la clase Directorio es la colección de archivos que contiene: Directorio.Archivos
+            //la cual es del tipo IEnumerable<FileInfo>
+
+
+            var cuentaDeTXT =
+                from directorio in misDirectorios
+                let cuantosTXT = (from archivo in directorio.Archivos
+                                  where archivo.Extension == ".txt"
+                                  select archivo.CreationTime).Count()
+                where cuantosTXT > 0
+                select new { Nombre = directorio.Ubicacion, CuantosTXT = cuantosTXT };
+
+            foreach (var item in cuentaDeTXT)
+            {
+                Console.WriteLine("{0}: {1}", item.Nombre, item.CuantosTXT.ToString());
+            }
+
+            separador.EscribirPie("Fin Ejemplo #17");
+            #endregion
+
 
             return;
 
