@@ -665,6 +665,18 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #17");
             #endregion
 
+            #region Ejemplo #18 - Ejemplo simple de Aggregate
+            separador.EscribirEncabezado("Ejemplo #18 - Ejemplo simple de Aggregate");
+
+            var semana = new string[] { "lunes", "martes", "miércoles", "jueves", "viernes" };
+            string agregada = semana.Aggregate(
+                    (x, y) =>
+                    x + ", " + y);
+            Console.WriteLine(agregada);
+
+
+            separador.EscribirPie("Fin Ejemplo #18");
+            #endregion
 
             return;
 
