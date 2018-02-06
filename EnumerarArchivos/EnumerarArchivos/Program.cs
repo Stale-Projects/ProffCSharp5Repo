@@ -678,6 +678,18 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #18");
             #endregion
 
+            #region Ejemplo #19 - Desvio Standard
+            separador.EscribirEncabezado("Ejemplo #19 - Desvio Standard");
+
+            var valores = new[] { new { x = 5, y = 10.15 }, new { x = 5, y = 10.12 }, new { x = 5, y = 10.33 }, new { x = 5, y = 10.5 } };
+
+            double desvioEstandar = valores.DesvioEstandar(z => ((double)z.y));
+            Console.WriteLine(desvioEstandar.ToString());
+
+            separador.EscribirPie("Fin Ejemplo #19");
+            #endregion
+
+
             return;
 
             //Filtrado por tipo

@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Directorio.cs" />
     <Compile Include="Mamifero.cs" />
+    <Compile Include="mvExtensiones.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
