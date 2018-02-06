@@ -686,6 +686,10 @@ namespace EnumerarArchivos
             double desvioEstandar = valores.DesvioEstandar(z => ((double)z.y));
             Console.WriteLine(desvioEstandar.ToString());
 
+            double[] dobles = new double[] { 10.15, 10.12, 10.33, 10.5 };
+            double desvEst = dobles.DesvioEstandarSimple();
+            Console.WriteLine(desvEst.ToString());
+
             separador.EscribirPie("Fin Ejemplo #19");
             #endregion
 
