@@ -693,6 +693,22 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #19");
             #endregion
 
+            #region Ejemplo #20 - ToLookup()
+            separador.EscribirEncabezado("Ejemplo #20 - ToLookup()");
+
+            var dirs = RecuperarTodosMisDirectorios();
+            var coleccion = dirs.ToLookup(d => d.Name, d => d.FullName);
+
+            if (coleccion.Contains("Documents"))
+            {
+                foreach (var di in coleccion["Documents"])
+                {
+                    Console.WriteLine(di);
+                }
+            }
+
+            separador.EscribirPie("Fin Ejemplo #20");
+            #endregion
 
             return;
 
