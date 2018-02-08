@@ -710,7 +710,29 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #20");
             #endregion
 
+            #region Ejemplo #21 - Uso de Empty
+            separador.EscribirEncabezado("Ejemplo #21 - Uso de Empty");
+
+            string[] theWho = { "Keith Moon", "Roger Daltrey", "John Entwistle", "Pete Townshend" };
+            string[] rush = { "Geddy Lee", "Neil Peart", "Alex Lifeson" };
+            string[] ledZepp = { "Robert Plant", "John Bonham", "Jimmy Page", "John Paul Jones" };
+
+            var listaDeBandas = new List<string[]> { theWho, rush, ledZepp };
+
+            IEnumerable<string> integrantesDe4 = listaDeBandas.Aggregate(Enumerable.Empty<string>(), (actual, proxima) => proxima.Length > 3 ?
+            actual.Union(proxima) : actual);
+
+            foreach (var integrante in integrantesDe4)
+            {
+                Console.WriteLine(integrante);
+            }
+
+            separador.EscribirPie("Fin Ejemplo #21");
+            #endregion
+
+
             return;
+
 
             //Filtrado por tipo
             //Este ejemplo se hizo demasiado complejo para algo simple
