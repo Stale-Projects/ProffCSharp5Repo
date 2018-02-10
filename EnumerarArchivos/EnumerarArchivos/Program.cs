@@ -730,9 +730,66 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin Ejemplo #21");
             #endregion
 
+            #region Ejemplo #22 - Generar secuencias con Repeat y Range
+            separador.EscribirEncabezado("Ejemplo #22 - Generar secuencias con Repeat y Range");
+
+            //Un modo sencillo de generar la secuencia de enteros aleatorios
+            var valoresRepetidos = Enumerable.Repeat<int>(5, 10);
+            var generador = new Random(DateTime.Now.Millisecond);
+
+            var valoresAleatorios_v1 = Enumerable.Empty<int>().ToList();
+            for (int i = 0; i < 100; i++)
+            {
+                valoresAleatorios_v1.Add(generador.Next());
+            }
+
+            Console.WriteLine("Valores aleatorios, versión 1");
+            foreach (var valor in valoresAleatorios_v1.Skip(20).Take(10))
+            {
+                Console.WriteLine(valor.ToString());
+            }
+            Console.WriteLine("-------------------------------");
+
+            //Lo siguiente no funciona, me da el mismo número repetido:
+            var valoresAleatorios_v2 = Enumerable.Repeat(generador.Next(), 100);
+
+            Console.WriteLine("Valores aleatorios, versión 2");
+            foreach (var valor in valoresAleatorios_v2.Skip(20).Take(10))
+            {
+                Console.WriteLine(valor.ToString());
+            }
+            Console.WriteLine("-------------------------------");
+
+
+            //Esto sí funciona y usa sólo LINQ
+            var valoresAleatorios_v3 = Enumerable.Repeat<Func<int>>(() => generador.Next(), 100)
+                .Select(f => f())
+                .ToList();
+
+            Console.WriteLine("Valores aleatorios, versión 3");
+            foreach (var valor in valoresAleatorios_v3.Skip(20).Take(10))
+            {
+                Console.WriteLine(valor.ToString());
+            }
+            Console.WriteLine("-------------------------------");
+
+            //Otro método más, usando Range
+            var valoresAleatorios_v4 = Enumerable.Range(0, 100)
+                .Select(n => generador.Next())
+                .ToList();
+
+            Console.WriteLine("Valores aleatorios, versión 4");
+            foreach (var valor in valoresAleatorios_v4.Skip(20).Take(10))
+            {
+                Console.WriteLine(valor.ToString());
+            }
+            Console.WriteLine("-------------------------------");
+
+
+            separador.EscribirPie("Fin de Ejemplo #22");
+            #endregion
 
             return;
-
 
             //Filtrado por tipo
             //Este ejemplo se hizo demasiado complejo para algo simple
