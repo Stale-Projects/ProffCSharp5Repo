@@ -41,11 +41,9 @@ namespace EnumerarArchivos
                               where archivo.Extension == ".txt"
                               select archivo;
 
-            Console.WriteLine("Todos los archivos TXT");
-            foreach (var archivoTXT in archivosTXT)
-            {
-                Console.WriteLine(archivoTXT.Name);
-            }
+
+            ImprimirColeccion(archivosTXT, 0, -1, "Todos los archivos TXT");
+
 
             separador.EscribirPie("Fin Ejemplo #01");
             #endregion
@@ -70,20 +68,16 @@ namespace EnumerarArchivos
             var buscarUnaVezMas = todosMisArchivos.Where(f => f.Extension == ".txt").OrderBy(f => f.Name).Select(f => f);
 
             //Ejecutar el query  
-            foreach (FileInfo archivo in buscarUnaVezMas)
-            {
-                Console.WriteLine(archivo.FullName);
-            }
+            ImprimirColeccion(buscarUnaVezMas);
+
             separador.EscribirPie("Fin Ejemplo #02");
             #endregion
 
             #region Ejemplo #02-b: Operador Where con métodos de extensión y más de una condición
             separador.EscribirEncabezado("Ejemplo #02-b: Operador Where con métodos de Extensión y más de una condición");
             var queryConDosCondiciones = todosMisArchivos.Where(f => (f.Extension == ".txt" && f.Name.Substring(0, 1).ToLower() == "a")).Select(f => f);
-            foreach (FileInfo archivo in queryConDosCondiciones)
-            {
-                Console.WriteLine(archivo.Name);
-            }
+
+            ImprimirColeccion(queryConDosCondiciones);
 
             separador.EscribirPie("Fin Ejemplo #02-b");
             #endregion
@@ -96,10 +90,7 @@ namespace EnumerarArchivos
             Console.WriteLine("Todos los archivos TXT cuyo índice sea par");
             var cuentaDeArchivosTXT_IndicePar = archivosTXT_IndicePar.Count();
             Console.WriteLine("Son {0} archivos", cuentaDeArchivosTXT_IndicePar.ToString());
-            foreach (var archivoTXT in archivosTXT_IndicePar)
-            {
-                Console.WriteLine(archivoTXT.Name);
-            }
+            ImprimirColeccion(archivosTXT_IndicePar);
 
             separador.EscribirPie("Fin Ejemplo #02-c");
             #endregion
@@ -114,22 +105,15 @@ namespace EnumerarArchivos
                               select n;
 
             Console.WriteLine("Primera pasada");
-            foreach (string name in nombresConA)
-            {
-                Console.WriteLine(name);
-            }
+            ImprimirColeccion(nombresConA);
             Console.WriteLine();
+
             nombres.Add("Alejandra");
             nombres.Add("Pablo");
             nombres.Add("Andrés");
             nombres.Add("David");
             Console.WriteLine("Segunda Pasada");
-
-
-            foreach (string name in nombresConA)
-            {
-                Console.WriteLine(name);
-            }
+            ImprimirColeccion(nombresConA);
 
             separador.EscribirPie("Fin Ejemplo #03");
             #endregion
@@ -224,11 +208,7 @@ namespace EnumerarArchivos
                 select directorio.Nombre;
 
             Console.WriteLine("Nombres de Directorios que contienen TXTs");
-            foreach (var descripcion in directoriosConTXT)
-            {
-                Console.WriteLine(descripcion);
-            }
-
+            ImprimirColeccion(directoriosConTXT);
 
             separador.EscribirPie("Fin ejemplo #05");
             #endregion
@@ -268,10 +248,7 @@ namespace EnumerarArchivos
                  select archivo.Name + " - " + archivo.CreationTime.ToShortDateString());
 
             Console.WriteLine("Archivos ordenados por fecha y nombre");
-            foreach (var archivo in archivosOrdenados)
-            {
-                Console.WriteLine(archivo);
-            }
+            ImprimirColeccion(archivosOrdenados);
 
             separador.EscribirPie("Fin ejemplo 06-c");
             #endregion
@@ -282,11 +259,7 @@ namespace EnumerarArchivos
             var archivosOrdenadosV2 = archivosTXT.OrderBy(f => f.CreationTime.ToShortDateString()).ThenBy(f => f.Name).Select(f => f.Name + " - " + f.CreationTime.ToShortDateString());
 
             Console.WriteLine("Archivos ordenados por fecha y nombre, usando métodos de extensión");
-            foreach (var archivo in archivosOrdenadosV2)
-            {
-                Console.WriteLine(archivo);
-            }
-
+            ImprimirColeccion(archivosOrdenadosV2);
 
             separador.EscribirPie("Fin Ejemplo #06-d");
             #endregion
@@ -302,6 +275,7 @@ namespace EnumerarArchivos
 
             Console.WriteLine("Cuantos archivos hay en cada grupo por inicial de nombre");
             Console.WriteLine("Contamos sólo aquellos grupos que tengan al menos un archivo");
+
             foreach (var grupo in agrupadosPorNombre)
             {
                 Console.WriteLine("Inicial: {0}, Cuenta: {1}", grupo.Inicial, grupo.Cuenta.ToString());
@@ -346,10 +320,8 @@ namespace EnumerarArchivos
             {
                 Console.WriteLine("Inicial: {0}, Cuenta: {1}", grupo.Inicial, grupo.Cuenta.ToString());
                 Console.WriteLine("Nombres: ");
-                foreach (var nombre in grupo.Nombres)
-                {
-                    Console.WriteLine(nombre);
-                }
+                ImprimirColeccion(grupo.Nombres);
+
             }
 
 
@@ -525,40 +497,40 @@ namespace EnumerarArchivos
 
             var multiplosDeDosYTres = multiplosDeDos.Intersect(multiplosDeTres);
             Console.WriteLine("Intersect - Múltiplos de 2 y 3");
-            foreach (var entero in multiplosDeDosYTres)
-            {
-                Console.WriteLine(entero.ToString());
-            }
+            ImprimirColeccion(multiplosDeDosYTres);
             Console.WriteLine();
 
 
             var multiplosDeDosYMultiplosDeTres = multiplosDeDos.Union(multiplosDeTres);
             Console.WriteLine("Union - Múltiplos de 2 y Múltiplos de 3");
-            foreach (var entero in multiplosDeDosYMultiplosDeTres)
-            {
-                Console.WriteLine(entero.ToString());
-            }
+            ImprimirColeccion(multiplosDeDosYMultiplosDeTres);
+
             Console.WriteLine();
 
             var multiplosDeDosPeroNoDeTres = multiplosDeDos.Except(multiplosDeTres);
             Console.WriteLine("Except - Múltiplos de 2 que no son múltiplos de 3");
 
-            foreach (var entero in multiplosDeDosPeroNoDeTres)
-            {
-                Console.WriteLine(entero.ToString());
-            }
+            ImprimirColeccion(multiplosDeDosPeroNoDeTres);
             Console.WriteLine();
 
             var multiplosDeTresPeroNoDeDos = multiplosDeTres.Except(multiplosDeDos);
             Console.WriteLine("Except - Múltiplos de 3 que no son múltiplos de 2");
 
-            foreach (var entero in multiplosDeTresPeroNoDeDos)
-            {
-                Console.WriteLine(entero.ToString());
-            }
+            ImprimirColeccion(multiplosDeTresPeroNoDeDos);
             Console.WriteLine();
 
             separador.EscribirPie("Fin Ejemplo #14");
+            #endregion
+
+            #region Ejemplo #14.1 Operador Distinct
+            separador.EscribirEncabezado("Ejemplo #14.1 Operador Distinct");
+
+            int[] edades = new int[] { 15, 17, 12, 15, 22, 33, 12, 33, 44, 55 };
+            var edadesUnicas = edades.Distinct();
+
+            ImprimirColeccion(edadesUnicas);
+
+            separador.EscribirPie("Fin Ejemplo #14.1");
             #endregion
 
             #region Ejemplo #15 - ZIP
@@ -570,10 +542,7 @@ namespace EnumerarArchivos
             var descripcionesDePoligonos = poligonos.Zip(lados,
                 (p, l) => p + ": " + l.ToString() + " lados");
 
-            foreach (var descripcion in descripcionesDePoligonos)
-            {
-                Console.WriteLine(descripcion);
-            }
+            ImprimirColeccion(descripcionesDePoligonos);
 
             separador.EscribirPie("Fin Ejemplo #15");
             #endregion
@@ -701,10 +670,8 @@ namespace EnumerarArchivos
 
             if (coleccion.Contains("Documents"))
             {
-                foreach (var di in coleccion["Documents"])
-                {
-                    Console.WriteLine(di);
-                }
+                ImprimirColeccion(coleccion["Documents"]);
+
             }
 
             separador.EscribirPie("Fin Ejemplo #20");
@@ -722,10 +689,7 @@ namespace EnumerarArchivos
             IEnumerable<string> integrantesDe4 = listaDeBandas.Aggregate(Enumerable.Empty<string>(), (actual, proxima) => proxima.Length > 3 ?
             actual.Union(proxima) : actual);
 
-            foreach (var integrante in integrantesDe4)
-            {
-                Console.WriteLine(integrante);
-            }
+            ImprimirColeccion(integrantesDe4);
 
             separador.EscribirPie("Fin Ejemplo #21");
             #endregion
@@ -743,22 +707,15 @@ namespace EnumerarArchivos
                 valoresAleatorios_v1.Add(generador.Next());
             }
 
-            Console.WriteLine("Valores aleatorios, versión 1");
-            foreach (var valor in valoresAleatorios_v1.Skip(20).Take(10))
-            {
-                Console.WriteLine(valor.ToString());
-            }
-            Console.WriteLine("-------------------------------");
+            ImprimirColeccion(valoresAleatorios_v1, 20, 10,
+                "Valores aleatorios, versión 1", "-------------------------------");
 
             //Lo siguiente no funciona, me da el mismo número repetido:
             var valoresAleatorios_v2 = Enumerable.Repeat(generador.Next(), 100);
 
-            Console.WriteLine("Valores aleatorios, versión 2");
-            foreach (var valor in valoresAleatorios_v2.Skip(20).Take(10))
-            {
-                Console.WriteLine(valor.ToString());
-            }
-            Console.WriteLine("-------------------------------");
+            ImprimirColeccion(valoresAleatorios_v2, 20, 10,
+                "Valores aleatorios, versión 2", "-------------------------------");
+
 
 
             //Esto sí funciona y usa sólo LINQ
@@ -766,28 +723,24 @@ namespace EnumerarArchivos
                 .Select(f => f())
                 .ToList();
 
-            Console.WriteLine("Valores aleatorios, versión 3");
-            foreach (var valor in valoresAleatorios_v3.Skip(20).Take(10))
-            {
-                Console.WriteLine(valor.ToString());
-            }
-            Console.WriteLine("-------------------------------");
+            ImprimirColeccion(valoresAleatorios_v3, 20, 10,
+                "Valores aleatorios, versión 3", "-------------------------------");
+
 
             //Otro método más, usando Range
             var valoresAleatorios_v4 = Enumerable.Range(0, 100)
                 .Select(n => generador.Next())
                 .ToList();
 
-            Console.WriteLine("Valores aleatorios, versión 4");
-            foreach (var valor in valoresAleatorios_v4.Skip(20).Take(10))
-            {
-                Console.WriteLine(valor.ToString());
-            }
-            Console.WriteLine("-------------------------------");
+            ImprimirColeccion(valoresAleatorios_v4, 20, 10,
+                "Valores aleatorios, versión 4", "-------------------------------");
+
 
 
             separador.EscribirPie("Fin de Ejemplo #22");
             #endregion
+
+
 
             return;
 
@@ -817,6 +770,34 @@ namespace EnumerarArchivos
 
 
 
+
+        }
+        /// <summary>
+        /// Esta función imprime los elementos de una colección
+        /// Permite saltar un número de elementos, 
+        /// tomar un número de elementos a imprimir
+        /// y agrega un encabezado y pie
+        /// a la salida por consola
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="coleccion">Un valor de tipo IEnumerable></param>
+        /// <param name="saltarElementos">Opcional. Número de elementos que salto antes de imprimir. Default a cero</param>
+        /// <param name="imprimirElementos">Opcional. Número de elementos a imprimir. Default a -1</param>
+        /// <param name="encabezado">Opcional. Un encabezado de la salida por consola</param>
+        /// <param name="pie">Opcional. Un pie para la salida por consola</param>
+        static void ImprimirColeccion<T>(IEnumerable<T> coleccion, int saltarElementos = 0,
+            int imprimirElementos = -1, string encabezado = "", string pie = "")
+        {
+            Console.WriteLine(encabezado);
+
+            foreach (T item in coleccion
+                .Skip(saltarElementos)
+                .Take(imprimirElementos == -1 ? coleccion.Count() : imprimirElementos))
+            {
+                Console.WriteLine(item.ToString());
+            }
+
+            Console.WriteLine(pie);
 
         }
 
