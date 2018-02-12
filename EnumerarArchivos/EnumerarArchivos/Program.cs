@@ -740,8 +740,23 @@ namespace EnumerarArchivos
             separador.EscribirPie("Fin de Ejemplo #22");
             #endregion
 
+            #region Ejemplo #23 - Uso de Distinct
+            separador.EscribirEncabezado("Ejemplo #23 - Uso de Distinct");
 
+            int[] numeros = new int[] { 1, 15, 57, 15, 1, 33 };
+            var distintos = numeros.Distinct();
 
+            ImprimirColeccion(distintos);
+
+            Mamifero[] mamiferos = new Mamifero[] {new Mamifero {Edad=10, Especie="Felino", Peso=12 },
+                new Mamifero { Edad = 15, Especie="Canido", Peso = 53},
+                new Mamifero { Edad=10, Especie= "Felino", Peso=12} };
+            var mamiferosDistintos = mamiferos.Distinct(new ComparadorDeMamiferos());
+
+            ImprimirColeccion(mamiferosDistintos);
+
+            separador.EscribirPie("Fin Ejemplo #23");
+            #endregion
             return;
 
             //Filtrado por tipo
