@@ -15,7 +15,7 @@
 ** Este proyecto provee ejemplos de Queries LINQ sobre objetos
 ** de tipo Directorio y otras colecciones creadas para ejemplos más
 ** sencillos.
-** Descripciones debajo
+** Descripciones adicionales debajo
 ===========================================================*/
 using System;
 using System.Collections.Generic;

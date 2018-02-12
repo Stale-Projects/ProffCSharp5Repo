@@ -3,6 +3,24 @@ using System.Collections.Generic;
 
 namespace EnumerarArchivos
 {
+
+
+
+
+
+
+
+
+
+
+    // ==++==
+    // 
+    //   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.
+    // 
+    // ==--==
+    /*============================================================    ** Proyecto: Capitulo11_EnumeradorDeArchivos    ** Clase:  Mamifero    **     ** <OWNER>MarceVolta</OWNER>    **    ** Propósito: Proveer ejemplos de código para el capítulo 11 del libro    ** "De Cabeza a C#"    ** Clase creada para escribir ejemplos de LINQ, y modificada    ** para implementar la interfaz IEquatable&lt;Mamifero&gt;    ===========================================================*/
+
+
     class Mamifero : IEquatable<Mamifero>
     {
         public int Peso { get; set; }
@@ -57,6 +75,15 @@ namespace EnumerarArchivos
 
 
     }
+
+    // ==++==
+    // 
+    //   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.
+    // 
+    // ==--==
+    /*============================================================    ** Proyecto: Capitulo11_EnumeradorDeArchivos    ** Clase:  ComparadorDeMamiferos    **     ** <OWNER>MarceVolta</OWNER>    **    ** Propósito: Proveer ejemplos de código para el capítulo 11 del libro    ** "De Cabeza a C#"    ** Clase creada para poder utilizar comparaciones en colecciones de
+    ** objetos de la clase Mamifero. Implementa la interfaz
+    ** IEqualityComparer&lt;Mamifero&gt;    ** para implementar la interfaz IEquatable&lt;Mamifero&gt;    ===========================================================*/
 
     class ComparadorDeMamiferos : IEqualityComparer<Mamifero>
     {
