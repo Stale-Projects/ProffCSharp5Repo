@@ -757,7 +757,64 @@ namespace EnumerarArchivos
 
             separador.EscribirPie("Fin Ejemplo #23");
             #endregion
+
+            #region Ejemplo #24 - Ejecución Paralela
+            separador.EscribirEncabezado("Ejemplo #24 - Ejecución Paralela vs. Serial");
+
+            //Ejecución serial
+            //var cronometro = System.Diagnostics.Stopwatch.StartNew();
+            ////
+            //var numerosNaturales = Enumerable.Range(0, Int32.MaxValue);
+            ////Dictionary<int, bool> divisibilidad = numerosNaturales.ToDictionary((n) => n, n => EsDivisiblePor3Y5(n));
+            //int[] divisiblesPor3Y5 = (from n in numerosNaturales
+            //                          where EsDivisiblePor3Y5(n) == true
+            //                          select n).ToArray();
+
+            //var cuantosDivisiblesPor3Y5 = divisiblesPor3Y5.Count();
+
+            //Console.WriteLine("De un total de {0} números hay {1} que son divisibles por 3 y 5 a la vez",
+            //    Int32.MaxValue.ToString(), cuantosDivisiblesPor3Y5.ToString());
+            //Console.WriteLine("Esto es un {0}% aproximadamente",
+            //    Math.Ceiling((double)(cuantosDivisiblesPor3Y5 / Int32.MaxValue)).ToString());
+
+
+            //cronometro.Stop();
+            //var CuantosMs = cronometro.ElapsedMilliseconds;
+            //Console.WriteLine("El proceso tomó: {0} milisegundos", CuantosMs.ToString());
+
+
+            //Ejecución Paralela
+            var cronometro = System.Diagnostics.Stopwatch.StartNew();
+
+
+            var numerosNaturales = Enumerable.Range(0, Int32.MaxValue);
+            int[] divisiblesPor3Y5 = (from n in numerosNaturales.AsParallel()
+                                      where EsDivisiblePor3Y5(n) == true
+                                      select n).ToArray();
+
+            var cuantosDivisiblesPor3Y5 = divisiblesPor3Y5.Count();
+
+            Console.WriteLine("De un total de {0} números hay {1} que son divisibles por 3 y 5 a la vez",
+                Int32.MaxValue.ToString(), cuantosDivisiblesPor3Y5.ToString());
+            Console.WriteLine("Esto es un {0}% aproximadamente",
+                Math.Ceiling((double)(cuantosDivisiblesPor3Y5 / Int32.MaxValue)).ToString());
+
+
+            cronometro.Stop();
+            var CuantosMs = cronometro.ElapsedMilliseconds;
+            Console.WriteLine("El proceso tomó: {0} milisegundos", CuantosMs.ToString());
+
+
+            separador.EscribirPie("Fin Ejemplo #24");
+            #endregion
+
+
             return;
+
+
+
+
+
 
             //Filtrado por tipo
             //Este ejemplo se hizo demasiado complejo para algo simple
@@ -768,6 +825,8 @@ namespace EnumerarArchivos
             //{
             //    Console.WriteLine("Directorio: <{0}>", directorio.FullName);
             //}
+
+
 
 
             //Filtrado por tipo
@@ -787,6 +846,7 @@ namespace EnumerarArchivos
 
 
         }
+
         /// <summary>
         /// Esta función imprime los elementos de una colección
         /// Permite saltar un número de elementos, 
@@ -984,7 +1044,26 @@ namespace EnumerarArchivos
             }
         }
 
+        /// <summary>
+        /// Una función simple para determinar si un número es divisible por 3 y por 5 a la vez
+        /// </summary>
+        /// <param name="numero">El número que queremos ver si es divisible</param>
+        /// <returns></returns>
+        private static bool EsDivisiblePor3Y5(int numero)
+        {
+            return (Math.Ceiling((double)numero / 3) == (double)numero / 3) &&
+                (Math.Ceiling((double)numero / 5) == (double)numero / 5) ?
+                true : false;
 
+            //Otro modo de hacerlo sería la siguiente:
+
+            //return ((Math.IEEERemainder(numero, 3) == 0) &&
+            //    (Math.IEEERemainder(numero, 5)) == 0) ? true : false;
+
+            //(En mi experiencia es más rápido el método de arriba)
+
+
+        }
 
     }
 
