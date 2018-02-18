@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EnumerarArchivos
 {
@@ -784,29 +786,70 @@ namespace EnumerarArchivos
 
 
             //Ejecución Paralela
-            var cronometro = System.Diagnostics.Stopwatch.StartNew();
+            //var cronometro = System.Diagnostics.Stopwatch.StartNew();
 
 
-            var numerosNaturales = Enumerable.Range(0, Int32.MaxValue);
-            int[] divisiblesPor3Y5 = (from n in numerosNaturales.AsParallel()
-                                      where EsDivisiblePor3Y5(n) == true
-                                      select n).ToArray();
+            //var numerosNaturales = Enumerable.Range(0, Int32.MaxValue);
+            //int[] divisiblesPor3Y5 = (from n in numerosNaturales.AsParallel()
+            //                          where EsDivisiblePor3Y5(n) == true
+            //                          select n).ToArray();
 
-            var cuantosDivisiblesPor3Y5 = divisiblesPor3Y5.Count();
+            //var cuantosDivisiblesPor3Y5 = divisiblesPor3Y5.Count();
 
-            Console.WriteLine("De un total de {0} números hay {1} que son divisibles por 3 y 5 a la vez",
-                Int32.MaxValue.ToString(), cuantosDivisiblesPor3Y5.ToString());
-            Console.WriteLine("Esto es un {0}% aproximadamente",
-                Math.Ceiling((double)(cuantosDivisiblesPor3Y5 / Int32.MaxValue)).ToString());
-
-
-            cronometro.Stop();
-            var CuantosMs = cronometro.ElapsedMilliseconds;
-            Console.WriteLine("El proceso tomó: {0} milisegundos", CuantosMs.ToString());
+            //Console.WriteLine("De un total de {0} números hay {1} que son divisibles por 3 y 5 a la vez",
+            //    Int32.MaxValue.ToString(), cuantosDivisiblesPor3Y5.ToString());
+            //Console.WriteLine("Esto es un {0}% aproximadamente",
+            //    Math.Ceiling((double)(cuantosDivisiblesPor3Y5 / Int32.MaxValue)).ToString());
 
 
-            separador.EscribirPie("Fin Ejemplo #24");
+            //cronometro.Stop();
+            //var CuantosMs = cronometro.ElapsedMilliseconds;
+            //Console.WriteLine("El proceso tomó: {0} milisegundos", CuantosMs.ToString());
+
+
+            //separador.EscribirPie("Fin Ejemplo #24");
             #endregion
+
+            #region Ejemplo #25 - Uso de CancellationToken
+            separador.EscribirEncabezado("Ejemplo #25 - Uso de CancellationToken");
+
+            CancellationTokenSource cts = new CancellationTokenSource();
+
+            Task.Factory.StartNew(() =>
+               {
+                   try
+                   {
+                       var numerosNaturales = Enumerable.Range(0, Int32.MaxValue);
+                       int[] divisiblesPor3Y5 = (from n in numerosNaturales.AsParallel().WithCancellation(cts.Token)
+                                                 where EsDivisiblePor3Y5(n) == true
+                                                 select n).ToArray();
+
+                       var cuantosDivisiblesPor3Y5 = divisiblesPor3Y5.Count();
+
+                       Console.WriteLine("De un total de {0} números hay {1} que son divisibles por 3 y 5 a la vez",
+                           Int32.MaxValue.ToString(), cuantosDivisiblesPor3Y5.ToString());
+                       Console.WriteLine("Esto es un {0}% aproximadamente",
+                           Math.Ceiling((double)(cuantosDivisiblesPor3Y5 / Int32.MaxValue)).ToString());
+                   }
+                   catch (OperationCanceledException ex)
+                   {
+                       Console.WriteLine(ex.Message);
+                   }
+
+               });
+
+            Console.WriteLine("Operación iniciada...oprime C si quieres cancelarla");
+            ConsoleKeyInfo teclaCancelacion = Console.ReadKey();
+            if (teclaCancelacion.Key == ConsoleKey.C)
+            {
+                cts.Cancel();
+            }
+
+            separador.EscribirPie("Fin Ejemplo #25");
+            #endregion
+
+            
+
 
 
             return;
