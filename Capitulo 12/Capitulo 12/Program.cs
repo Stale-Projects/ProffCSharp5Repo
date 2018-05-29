@@ -3,7 +3,17 @@
 //   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.
 // 
 // ==--==
-/*============================================================    ** Proyecto: Capitulo10_ColeccionesObservables    ** Clase:  Program    **     ** <OWNER>MarceVolta</OWNER>    **    ** Propósito: Proveer ejemplos de código para el capítulo 12 del libro    ** "De Cabeza a C#"    ** Este proyecto provee ejemplos de Código Asincrónico o Asíncrono    ** Descripciones debajo en los summary    ===========================================================*/
+/*============================================================
+    ** Proyecto: Capitulo10_ColeccionesObservables
+    ** Clase:  Program
+    ** 
+    ** <OWNER>MarceVolta</OWNER>
+    **
+    ** Propósito: Proveer ejemplos de código para el capítulo 12 del libro
+    ** "De Cabeza a C#"
+    ** Este proyecto provee ejemplos de Código Asincrónico o Asíncrono
+    ** Descripciones debajo en los summary
+    ===========================================================*/
 
 using System;
 using System.Net;
@@ -72,11 +82,10 @@ namespace Capitulo_12
             //código asíncrono
             BuscarHostPorNombre_v2(url);
 
-
-
             separador.EscribirPie("Fin Ejemplo #04");
             #endregion
 
+            //await SmtpClient.SendMailAsync(mailMessage);
         }
 
 
@@ -188,7 +197,11 @@ namespace Capitulo_12
 
     }
 
-    /// <summary>    /// Esta struct encapsula dos métodos para mostrar un encabezado y un pie     /// para cada ejemplo, de modo que podamos verlos por separado en la salida de     /// consola e identificar los resultados de cada ejemplo    /// </summary>
+    /// <summary>
+    /// Esta struct encapsula dos métodos para mostrar un encabezado y un pie 
+    /// para cada ejemplo, de modo que podamos verlos por separado en la salida de 
+    /// consola e identificar los resultados de cada ejemplo
+    /// </summary>
     struct EncabezadoYPieConsola
     {
         public void EscribirEncabezado(string Titulo)
