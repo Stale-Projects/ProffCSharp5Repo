@@ -4,29 +4,70 @@
 // 
 // ==--==
 /*============================================================
-    ** Proyecto: Capitulo10_ColeccionesObservables
-    ** Clase:  Program
+    ** Proyecto: Capitulo12
     ** 
     ** <OWNER>MarceVolta</OWNER>
     **
     ** Propósito: Proveer ejemplos de código para el capítulo 12 del libro
     ** "De Cabeza a C#"
-    ** Este proyecto provee ejemplos de Código Asincrónico o Asíncrono
-    ** Descripciones debajo en los summary
+    ** Este proyecto provee ejemplos de Código Asincrónico
+    ** Descripciones debajo
     ===========================================================*/
 
+using Nito.AsyncEx;
 using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Capitulo_12
 {
+    // ==++==
+    // 
+    //   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.
+    // 
+    // ==--==
+    /*============================================================
+            ** Proyecto: Capitulo12_Async
+            ** Clase:  Program
+            ** 
+            ** <OWNER>MarceVolta</OWNER>
+            **
+            ** Propósito: Proveer ejemplos de código para el capítulo 12 del libro
+            ** "De Cabeza a C#"
+            ** Este proyecto provee ejemplos de código asincrónico en C#
+            * Ten en cuenta que debes referenciar los namespaces System.Threading y 
+            * Sysm.Threading.Tasks
+            * La funcionalidad está provista por el assembly mscorlib
+            * Además debemos referenciar System.Net para los ejemplos 
+            * que usan funcionalidad de red como ejemplo de código I/O - bound
+            ** Descripciones debajo en el summary
+         ===========================================================*/
 
     class Program
     {
         private static EncabezadoYPieConsola separador = new EncabezadoYPieConsola();
-        static void Main(string[] args)
+
+        /// <summary>
+        /// Esta función Main se usa de dos maneras: 
+        /// Por un lado ejecutamos código asincrónico
+        /// usando los patrones de .NET anteriores a 4.0 
+        /// Para usar TAP sólo delegamos en MainAsync
+        /// ya que necesitamos un Main asincrónico
+        /// para poder llamar a await
+        /// MainAsync se ejecuta en forma asincrónica
+        /// Para eso usa un AsyncContext que está definido 
+        /// en la biblioteca Nito.AsyncEx (instalar con NuGet)
+        /// Cualquier excepción es capturada y reportada
+        /// Observa que nos alejamos del clásico retorno void para 
+        /// Main de modo que podamos realizar el llamado a AsyncContext
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        static int Main(string[] args)
         {
+            //Patrones asincrónicos anteriores a .NET 4.0
 
             #region Ejemplo #01 - Patrón EAP (Event Asynchronous Pattern)
             separador.EscribirEncabezado("Ejemplo #01 - Patrón EAP (Event Asynchronous Pattern)");
@@ -85,12 +126,177 @@ namespace Capitulo_12
             separador.EscribirPie("Fin Ejemplo #04");
             #endregion
 
-            //await SmtpClient.SendMailAsync(mailMessage);
+
+            //Llamado a MainAsync, donde ejecuto el resto de los ejemplos escritos siguiendo el TAP
+            try
+            {
+                return AsyncContext.Run(() => MainAsync(args));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        /// <summary>
+        /// Esta es una versión async de Main
+        /// La usamos como si fuera Main y nos da 
+        /// la posibilidad de usar await
+        /// </summary>
+        /// <param name="args">El mismo parámetro que llega a Main: colección de argumentos</param>
+        /// <returns></returns>
+        /// 
+
+        static async Task<int> MainAsync(string[] args)
+        {
+            //ToDo: Escribir ejemplos básicos de TAP
+
+            #region Ejemplo #7: Conversión a TAP "a mano"
+            separador.EscribirEncabezado("Ejemplo #7: Conversión a TAP 'a mano'");
+
+            string hostName = "www.google.com";
+            IPHostEntry iphost = await (ReturnHostEntryAsync(hostName));
+            Console.WriteLine("Esta es la lista de IPs del host {0}", hostName);
+            foreach (IPAddress ip in iphost.AddressList)
+            {
+                Console.WriteLine(ip.ToString());
+            }
+
+            separador.EscribirPie("Fin Ejemplo #7");
+            #endregion
+
+            #region Ejemplo #8: Conversión a TAP usando FromAsync
+            separador.EscribirEncabezado("Ejemplo #8: Conversión a TAP usando FromAsync");
+
+            string hostNameOrAddress = "www.facebook.com";
+            Task<IPHostEntry> t = Task<IPHostEntry>.Factory.FromAsync<string>(Dns.BeginGetHostEntry,
+                Dns.EndGetHostEntry, hostNameOrAddress, null);
+
+            IPHostEntry ipHostFB = await (t);
+
+            Console.WriteLine("Esta es la lista de IPs del host {0}", hostNameOrAddress);
+            foreach (IPAddress ip in ipHostFB.AddressList)
+            {
+                Console.WriteLine(ip.ToString());
+            }
+
+            separador.EscribirPie("Fin Ejemplo #8");
+            #endregion
+
+            #region Ejemplo #9: Tres modos de Espera
+            separador.EscribirEncabezado("Ejemplo #9: Tres modos de Espera");
+
+            //Ejemplo 9: Tres modos de espera. El único que no es aceptable es Thread.Sleep()
+            //ya que éste ocupa un thread del pool sólo para ahecrlo esperar
+
+            Console.WriteLine("Esperamos tres segundos usando un timer async...");
+            await Esperar(3000);
+            Console.WriteLine("Listo!");
+
+            Console.WriteLine("Esperamos dos segundos usando Task.Delay...");
+            await Task.Delay(2000);
+            Console.WriteLine("Listo!");
+
+            Console.WriteLine("Esperamos dos segundos usando Thread.Sleep...");
+            await Task.Run(() => Thread.Sleep(2000));
+            Console.WriteLine("Listo!");
+
+            separador.EscribirPie("Fin Ejemplo #9");
+            #endregion
+
+            #region Ejemplo #10: Uso de WhenAll
+            separador.EscribirEncabezado("Ejemplo #10: Uso de WhenAll");
+
+            //tasks es la colección detasks que vamos a crear
+            var tasks = new List<Task<long>>();
+
+            for (int ctr = 1; ctr <= 10; ctr++)
+            {
+                int intervaloDePausa = 18 * ctr;
+                tasks.Add(Task.Run(async () =>
+                {
+                    long total = 0;
+                    await Task.Delay(intervaloDePausa);
+                    var rnd = new Random();
+                    // Generar 1.000 enteros aleatorios
+                    for (int n = 1; n <= 1000; n++)
+                        total += rnd.Next(0, 1000);
+                    return total;
+                }));
+            }
+            var todosLosTasks = Task.WhenAll(tasks);
+            try
+            {
+                //todosLosTasks.Wait();
+                long[] valores = await todosLosTasks;
+            }
+            catch (AggregateException)
+            { }
+
+            if (todosLosTasks.Status == TaskStatus.RanToCompletion)
+            {
+                long totalGeneral = 0;
+
+                foreach (var resultado in todosLosTasks.Result)
+                {
+                    totalGeneral += resultado;
+                    Console.WriteLine("Promedio: {0:N2}, n = 1.000", resultado / 1000.0);
+                }
+
+                Console.WriteLine("\nPromedio General: {0:N2}, n = 10.000",
+                                  totalGeneral / 10000);
+            }
+            // Mostrar info de los tasks con errores
+            else
+            {
+                foreach (var tsk in tasks)
+                {
+                    Console.WriteLine("Task {0}: {1}", tsk.Id, tsk.Status);
+                }
+            }
+
+            separador.EscribirPie("Fin Ejemplo #10");
+            #endregion
+
+            #region Ejemplo 11: Uso de WhenAny
+            separador.EscribirEncabezado("Ejemplo 11: Uso de WhenAny");
+
+            CancellationTokenSource cts = new CancellationTokenSource();
+
+            Task<Task<long>> cualquierTarea = Task.WhenAny(tasks);
+            Task<long> primerTareaCompleta = await cualquierTarea;
+
+            Console.WriteLine("Primer tarea completa: ID= {0} - Resultado= {1}", primerTareaCompleta.Id.ToString(),
+                primerTareaCompleta.Result.ToString());
+
+            foreach (var unaTarea in tasks)
+            {
+                if (unaTarea != primerTareaCompleta)
+                {
+                    await unaTarea;
+
+                }
+            }
+
+
+            separador.EscribirPie("Fin Ejemplo #11");
+            #endregion
+
+
+
+            return 0;
+
         }
 
 
+
         /// <summary>
-        /// Código bloqueante o sincrónico
+        /// Esta es la primera mitad del código para descargar una página web 
+        /// usando callbacks. Lo que hago aquí es fijar el callback para que 
+        /// llame a OnDownloadStringCompleted e invocar el 
+        /// método asincrónico DownloadStringAsync
         /// </summary>
         /// <param name="uri">URI que identifica la página web a descargar</param>
         private static void DescargarPaginaWeb(Uri uri)
@@ -194,7 +400,87 @@ namespace Capitulo_12
         }
 
 
+        /// <summary>
+        /// Este método encapsula un método async implementado por medio del patrón IAsyncResult
+        /// (que usa callbacks al estilo de .NET 4.0), utilizando un Puppet Task por medio 
+        /// TaskCompletionSource. De este modo le evito al código cliente, tener que desdoblarse
+        /// para definir un callback. Aquí devolvemos un Task que puede ser esperado por medio de
+        /// await usando el patrón TAP
+        /// </summary>
+        /// <param name="hostNameOrAddress"></param>
+        /// <returns></returns>
+        public static Task<IPHostEntry> ReturnHostEntryAsync(string hostNameOrAddress)
+        {
+            TaskCompletionSource<IPHostEntry> tcs = new TaskCompletionSource<IPHostEntry>();
+            Dns.BeginGetHostEntry(hostNameOrAddress,
+                asyncResult =>
+                {
+                    try
+                    {
+                        IPHostEntry resultado = Dns.EndGetHostEntry(asyncResult);
+                        tcs.SetResult(resultado);
+                    }
+                    catch (Exception e)
+                    {
+                        tcs.SetException(e);
 
+                    }
+                }
+                , null);
+
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Implementa una espera asincrónica por medio de un Timer.
+        /// Preferida a Thread.Sleep() pero reemplazada por Task.Wait()
+        /// </summary>
+        /// <param name="milisegundos">Tiempo de espera</param>
+        /// <returns></returns>
+        private static Task Esperar(int milisegundos)
+        {
+            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+            Timer timer = new Timer(_ => tcs.SetResult(null), null, milisegundos, Timeout.Infinite);
+            tcs.Task.ContinueWith(delegate { timer.Dispose(); });
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Identifica el thread escribiendo su ID en la consola
+        /// </summary>
+        static void IdentificarThread()
+        {
+            Console.WriteLine("Este es el thread [{0}] ", Thread.CurrentThread.ManagedThreadId.ToString());
+        }
+
+        static async Task<T> TaskConTimeout<T>(Task<T> task, int milisegundos)
+        {
+
+            Task espera = Task.Delay(milisegundos);
+            //WhenAny puede manejra distintos tipos de Tasks
+            Task primeroCompleto = await Task.WhenAny(task, espera);
+
+            if (primeroCompleto == espera)
+            {
+                //Si el TimeOut se completó primero puede ser porque hubo excepciones
+                //ToDo: El compilador me tira un warning acá
+                //ToDo: Ojo que ContinueWith le manda el argumento al action!
+                task.ContinueWith(ManejarExcepcion);
+                throw new TimeoutException();
+            }
+
+            //ToDo: no entiendo esto
+            return await task;
+        }
+
+        static void ManejarExcepcion<T>(Task<T> task)
+        {
+            if (task.Exception != null)
+            {
+                Console.WriteLine(task.Exception.ToString());
+            }
+
+        }
     }
 
     /// <summary>
