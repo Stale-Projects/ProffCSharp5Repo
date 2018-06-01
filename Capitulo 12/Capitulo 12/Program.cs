@@ -239,10 +239,10 @@ namespace Capitulo_12
             {
                 long totalGeneral = 0;
 
-                foreach (var resultado in todosLosTasks.Result)
+                foreach (var result in todosLosTasks.Result)
                 {
-                    totalGeneral += resultado;
-                    Console.WriteLine("Promedio: {0:N2}, n = 1.000", resultado / 1000.0);
+                    totalGeneral += result;
+                    Console.WriteLine("Promedio: {0:N2}, n = 1.000", result / 1000.0);
                 }
 
                 Console.WriteLine("\nPromedio General: {0:N2}, n = 10.000",
@@ -284,7 +284,26 @@ namespace Capitulo_12
             separador.EscribirPie("Fin Ejemplo #11");
             #endregion
 
+            #region Ejemplo #12: Combinators propios
+            separador.EscribirEncabezado("Ejemplo #12: Combinators propios");
 
+            Task<IPAddress[]> task = new Task<IPAddress[]>(() => Dns.GetHostAddressesAsync("www.cnn.com").Result);
+            var resultado = await TaskConTimeout<IPAddress[]>(task, 1000);
+            if (task.Status == TaskStatus.RanToCompletion)
+            {
+                Console.WriteLine("Obtuve las IPs exitosamente");
+                foreach (var ip in resultado)
+                {
+                    Console.WriteLine("IP encontrada: {0}", ip.ToString());
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ocurrió una excepción: {0}", task.Exception.ToString());
+            }
+
+            separador.EscribirPie("Fin Ejemplo #12");
+            #endregion
 
             return 0;
 
@@ -465,11 +484,14 @@ namespace Capitulo_12
                 //Si el TimeOut se completó primero puede ser porque hubo excepciones
                 //ToDo: El compilador me tira un warning acá
                 //ToDo: Ojo que ContinueWith le manda el argumento al action!
+                //En este caso el argumento es un tipo Task<T>
+                //Si pongo await esto nunca termina
                 task.ContinueWith(ManejarExcepcion);
                 throw new TimeoutException();
             }
 
-            //ToDo: no entiendo esto
+            //Por ser un método async no puede retornar un Task<T>
+            //Tiene que retornar T. Por eso el await
             return await task;
         }
 
