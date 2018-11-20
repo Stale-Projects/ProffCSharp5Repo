@@ -1,15 +1,49 @@
-﻿using System;
+﻿// ==++==
+// 
+//   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.
+// 
+// ==--==
+
+/*============================================================
+    ** Proyecto: Capitulo03
+    ** 
+    ** <OWNER>MarceVolta</OWNER>
+    **
+    ** Propósito: Proveer ejemplos de código para el capítulo 3 del libro
+    ** "De Cabeza a C#"
+    ** Este proyecto provee ejemplos de Tipos y Objetos en C# 
+    ** Descripciones debajo
+    ===========================================================*/
+
+using System;
 using System.Drawing;
 
 namespace Chapter03
 {
+    // ==++==
+    // 
+    //   Copyright (c) S. Marcelo Volta.  Todos los derechos reservados.
+    // 
+    // ==--==
+    /*============================================================
+            ** Proyecto: Capitulo03
+            ** Clase:  Program
+            ** 
+            ** <OWNER>MarceVolta</OWNER>
+            **
+            ** Propósito: Proveer ejemplos de código para el capítulo 3 del libro
+            ** "De Cabeza a C#"
+                     ===========================================================*/
     class Program
     {
+        private static EncabezadoYPieConsola separador = new EncabezadoYPieConsola();
+
         static void Main(string[] args)
         {
-            //Console.WriteLine("The background color is {0}", UserPreferences.BackgroundColor.Name);
-            UserPreferences ThisUserPreferences = new UserPreferences();
-            ThisUserPreferences.PrintColor();
+
+            PreferenciasDeUsuario Preferencias = new PreferenciasDeUsuario();
+            Preferencias.MostrarColor();
+
             PhoneCustomerStruct aCustomer = new PhoneCustomerStruct();
             aCustomer.FirstName = "Jorge";
             aCustomer.LastName = "Borges";
@@ -45,30 +79,30 @@ namespace Chapter03
         }
     }
 
-    class UserPreferences
+    class PreferenciasDeUsuario
     {
-        public static readonly Color BackgroundColor;
+        public static readonly Color ColorDeFondo;
 
-        static UserPreferences()
+        static PreferenciasDeUsuario()
         {
             DateTime now = DateTime.Now;
             if (now.DayOfWeek == DayOfWeek.Saturday
                 || now.DayOfWeek == DayOfWeek.Sunday)
             {
-                BackgroundColor = Color.Green;
+                ColorDeFondo = Color.Green;
             }
             else
             {
-                BackgroundColor = Color.Red;
+                ColorDeFondo = Color.Red;
             }
         }
 
-        public UserPreferences()
+        public PreferenciasDeUsuario()
         { }
 
-        public void PrintColor()
+        public void MostrarColor()
         {
-            Console.WriteLine("Printcolor is {0}", BackgroundColor.Name);
+            Console.WriteLine("El color de fondo es {0}", ColorDeFondo.Name);
         }
     }
 
@@ -115,5 +149,35 @@ namespace Chapter03
 
     }
 
+
+    /// <summary>    /// Esta struct encapsula dos métodos para mostrar un encabezado y un pie     /// para cada ejemplo, de modo que podamos verlos por separado en la salida de     /// consola e identificar los resultados de cada ejemplo    /// </summary>
+    struct EncabezadoYPieConsola
+    {
+        public void EscribirEncabezado(string Titulo)
+        {
+            string encabezado = PrepararString(Titulo, '*');
+            Console.WriteLine(encabezado);
+            Console.WriteLine("");
+        }
+
+        public void EscribirPie(string Titulo)
+        {
+            string pie = PrepararString(Titulo, '-');
+            Console.WriteLine("");
+            Console.WriteLine(pie);
+            Console.WriteLine("");
+            Console.WriteLine("");
+        }
+
+        private string PrepararString(string Literal, char Caracter)
+        {
+            if (Literal.Length > 80)
+                Literal = Literal.Substring(1, 80);
+            int numeroDeAsteriscos = 80 - Literal.Length;
+            string preparada = new string(Caracter, (int)(numeroDeAsteriscos / 2)) + Literal +
+            new string(Caracter, (int)(numeroDeAsteriscos / 2));
+            return preparada;
+        }
+    }
 
 }
